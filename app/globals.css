@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
+/* ── Design tokens ──────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --orb-1: rgba(124, 58, 237, 0.18);   /* violet */
+  --orb-2: rgba(37,  99, 235, 0.15);   /* blue   */
+  --orb-3: rgba(6,  182, 212, 0.12);   /* cyan   */
 }
 
 @theme inline {
@@ -12,15 +16,804 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ───────────────────────────────────────────────────────────────────── */
+html {
+  background-color: #0f172a;
 }
 
 body {
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  overflow-x: hidden;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND
+   Three layered effects:
+   1. Aurora — slow-moving gradient mesh
+   2. Orbs — floating glowing blobs
+   3. Grid — subtle dot pattern overlay
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Layer 0: base dark canvas */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background: #0a0f1e;
+  overflow: hidden;
+}
+
+/* Layer 1: aurora gradient */
+.animated-bg::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%,  rgba(124, 58, 237, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 70%,  rgba(37,  99, 235, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(6,  182, 212, 0.14) 0%, transparent 60%);
+  animation: aurora 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes aurora {
+  0%   { transform: translate(0%,    0%) rotate(0deg)   scale(1);    }
+  25%  { transform: translate(4%,    3%) rotate(2deg)   scale(1.04); }
+  50%  { transform: translate(-3%,   5%) rotate(-1.5deg) scale(1.02); }
+  75%  { transform: translate(5%,   -3%) rotate(3deg)   scale(1.05); }
+  100% { transform: translate(-2%,   2%) rotate(-2deg)  scale(1);    }
+}
+
+/* Layer 2: floating orbs */
+.animated-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle 400px at 15%  20%, rgba(124, 58, 237, 0.12) 0%, transparent 70%),
+    radial-gradient(circle 300px at 85%  15%, rgba(37,  99, 235, 0.10) 0%, transparent 70%),
+    radial-gradient(circle 350px at 70%  80%, rgba(6,  182, 212, 0.09) 0%, transparent 70%),
+    radial-gradient(circle 250px at 30%  85%, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+  animation: orbs 25s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes orbs {
+  0%   { transform: translate(0px,   0px) scale(1);    opacity: 0.8; }
+  20%  { transform: translate(30px, -20px) scale(1.05); opacity: 1;   }
+  40%  { transform: translate(-20px, 30px) scale(0.96); opacity: 0.9; }
+  60%  { transform: translate(25px,  25px) scale(1.03); opacity: 1;   }
+  80%  { transform: translate(-15px,-25px) scale(1.01); opacity: 0.85;}
+  100% { transform: translate(0px,   0px) scale(1);    opacity: 0.8; }
+}
+
+/* Layer 3: dot grid overlay */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -9;
+  background-image:
+    radial-gradient(circle, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* Subtle vignette on edges */
+.bg-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: -8;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SIDEBAR ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Sidebar slide-in from left on mount */
+@keyframes sidebarSlideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sidebar-enter {
+  animation: sidebarSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered nav item entry */
+@keyframes navItemFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nav-item-1  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.1s; opacity: 0; }
+.nav-item-2  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.16s; opacity: 0; }
+.nav-item-3  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.22s; opacity: 0; }
+.nav-item-4  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.28s; opacity: 0; }
+.nav-item-5  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.34s; opacity: 0; }
+.nav-item-6  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.40s; opacity: 0; }
+.nav-item-7  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.46s; opacity: 0; }
+
+/* Logo pulse glow */
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);   }
+  50%       { box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.35); }
+}
+
+.logo-glow {
+  animation: logoPulse 3s ease-in-out infinite;
+}
+
+/* Active nav item shimmer sweep */
+@keyframes shimmerSweep {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.nav-active-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.8) 0%,
+    rgba(59, 130, 246, 1)   40%,
+    rgba(167, 139, 250, 1)  60%,
+    rgba(59, 130, 246, 0.8) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmerSweep 4s linear infinite;
+}
+
+/* Sidebar active glow ring */
+@keyframes activeGlow {
+  0%, 100% { box-shadow: 0 0 8px 1px rgba(139, 92, 246, 0.3); }
+  50%       { box-shadow: 0 0 18px 3px rgba(139, 92, 246, 0.55); }
+}
+
+.nav-active-glow {
+  animation: activeGlow 2.5s ease-in-out infinite;
+}
+
+/* Icon spin on hover (used in label text) */
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0);  }
+  50%       { transform: translateY(-2px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DEEP WORK MODE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+.deep-work-mode .animated-bg::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(15, 52, 96, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(22, 33, 62, 0.30) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%,rgba(26, 26, 46, 0.25) 0%, transparent 60%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SMOOTH TRANSITIONS (non-layout props only to avoid jank)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+* {
+  transition:
+    background-color 0.25s ease,
+    color            0.25s ease,
+    border-color     0.25s ease,
+    opacity          0.25s ease,
+    box-shadow       0.25s ease;
+}
+
+/* ── Mobile / Touch ─────────────────────────────────────────────────────────── */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (pointer: coarse) {
+  button, a, [role="button"] { min-height: 44px; }
+}
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar { width: 0; background: transparent; }
+  body { overflow-x: hidden; }
+}
+
+@media (min-width: 769px) {
+  ::-webkit-scrollbar       { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.4);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+}
+
+nav button, aside button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Utility: animate-in ────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Section transition (fires when key changes in React) ──────────────────── */
+@keyframes sectionEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.99);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.section-enter {
+  animation: sectionEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   PREMIUM LIGHT MODE — Bright, Elegant & Distinct
+   Color Palette: Warm whites, soft lavenders, indigo accents
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root Variables ─────────────────────────────────────────────────────────── */
+.light-mode {
+  --background: #FAFBFE;
+  --foreground: #1a1a2e;
+  --orb-1: rgba(129, 99, 255, 0.06);
+  --orb-2: rgba(79, 143, 255, 0.05);
+  --orb-3: rgba(56, 189, 248, 0.03);
+  background-color: #FAFBFE !important;
+}
+
+.light-mode html,
+.light-mode body {
+  background-color: #FAFBFE !important;
+  color: #1a1a2e !important;
+}
+
+/* ── Animated Background — Soft pastel aurora ──────────────────────────────── */
+.light-mode .animated-bg {
+  background: linear-gradient(135deg, #f0f0ff 0%, #f8f6ff 40%, #f0f7ff 70%, #faf8ff 100%) !important;
+}
+
+.light-mode .animated-bg::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(167, 139, 250, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(96, 165, 250, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(129, 230, 217, 0.08) 0%, transparent 60%) !important;
+}
+
+.light-mode .animated-bg::after {
+  background:
+    radial-gradient(circle 400px at 15% 20%, rgba(167, 139, 250, 0.06) 0%, transparent 70%),
+    radial-gradient(circle 300px at 85% 15%, rgba(96, 165, 250, 0.05) 0%, transparent 70%),
+    radial-gradient(circle 350px at 70% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 70%),
+    radial-gradient(circle 250px at 30% 85%, rgba(167, 139, 250, 0.03) 0%, transparent 70%) !important;
+}
+
+/* Dot grid — barely visible on light */
+.light-mode .bg-grid {
+  background-image:
+    radial-gradient(circle, rgba(129, 99, 255, 0.04) 1px, transparent 1px) !important;
+}
+
+/* Vignette — ultra subtle on light */
+.light-mode .bg-vignette {
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(200, 200, 230, 0.15) 100%) !important;
+}
+
+/* ── CARD & PANEL BACKGROUNDS ──────────────────────────────────────────────── */
+/* Override ALL dark bg-gradient-to-* to clean white cards with colored borders */
+.light-mode [class*="bg-gradient-to-br"][class*="from-slate-"],
+.light-mode [class*="bg-gradient-to-r"][class*="from-slate-"],
+.light-mode [class*="bg-gradient-to-b"][class*="from-slate-"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* Individual dark backgrounds → bright white */
+.light-mode .bg-slate-950,
+.light-mode .bg-slate-900,
+.light-mode .bg-slate-850,
+.light-mode .bg-slate-800,
+.light-mode .bg-slate-750,
+.light-mode .bg-slate-700 {
+  background-color: #ffffff !important;
+}
+
+/* Opacity variants of dark backgrounds */
+.light-mode .bg-slate-950\/95,
+.light-mode .bg-slate-950\/90,
+.light-mode .bg-slate-950\/60,
+.light-mode .bg-slate-950\/40,
+.light-mode .bg-slate-950\/20,
+.light-mode .bg-slate-900\/95,
+.light-mode .bg-slate-900\/60,
+.light-mode .bg-slate-900\/50,
+.light-mode .bg-slate-900\/40,
+.light-mode .bg-slate-800\/60,
+.light-mode .bg-slate-800\/50,
+.light-mode .bg-slate-800\/40,
+.light-mode .bg-slate-800\/20,
+.light-mode .bg-slate-700\/50,
+.light-mode .bg-slate-700\/40,
+.light-mode .bg-slate-700\/30,
+.light-mode .bg-slate-700\/20 {
+  background-color: #ffffff !important;
+}
+
+/* Card container styling — premium shadow with lavender tint */
+.light-mode [class*="from-slate-800"][class*="to-slate-900"],
+.light-mode [class*="from-slate-800\/50"][class*="to-slate-900\/50"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.06), 0 8px 24px -8px rgba(129, 99, 255, 0.08) !important;
+}
+
+/* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
+.light-mode aside {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-right-color: #e8e4f3 !important;
+  box-shadow: 2px 0 16px rgba(129, 99, 255, 0.04) !important;
+}
+
+.light-mode aside .backdrop-blur-xl {
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+}
+
+/* ── BORDERS — soft lavender tints ─────────────────────────────────────────── */
+.light-mode .border-slate-850,
+.light-mode .border-slate-800,
+.light-mode .border-slate-750,
+.light-mode .border-slate-700,
+.light-mode .border-slate-600,
+.light-mode .border-slate-500 {
+  border-color: #e4e0f0 !important;
+}
+
+.light-mode .border-slate-800\/80,
+.light-mode .border-slate-800\/60,
+.light-mode .border-slate-800\/50,
+.light-mode .border-slate-700\/80,
+.light-mode .border-slate-700\/50,
+.light-mode .border-slate-700\/40,
+.light-mode .border-slate-600\/50 {
+  border-color: #e8e4f3 !important;
+}
+
+.light-mode .divide-slate-800\/40 > * {
+  border-color: #e8e4f3 !important;
+}
+
+/* ── TYPOGRAPHY — rich dark text on light bg ───────────────────────────────── */
+.light-mode .text-white {
+  color: #1a1a2e !important;
+}
+
+.light-mode .text-slate-100,
+.light-mode .text-slate-200 {
+  color: #1e1e3a !important;
+}
+
+.light-mode .text-slate-300 {
+  color: #2d2d52 !important;
+}
+
+.light-mode .text-slate-400 {
+  color: #5c5c7d !important;
+}
+
+.light-mode .text-slate-500 {
+  color: #7a7a99 !important;
+}
+
+/* Title gradient overrides — dark indigo gradient text */
+.light-mode .bg-gradient-to-r.from-white.to-slate-200 {
+  background-image: linear-gradient(to right, #2d1b69, #4338ca) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+.light-mode .from-white {
+  --tw-gradient-from: #2d1b69 !important;
+}
+
+.light-mode .to-slate-200 {
+  --tw-gradient-to: #4338ca !important;
+}
+
+/* ── FORM INPUTS — clean with indigo focus ring ────────────────────────────── */
+.light-mode input,
+.light-mode select,
+.light-mode textarea {
+  background-color: #f5f3ff !important;
+  border: 1.5px solid #d4d0e8 !important;
+  color: #1a1a2e !important;
+}
+
+.light-mode input:focus,
+.light-mode select:focus,
+.light-mode textarea:focus {
+  background-color: #ffffff !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12), 0 1px 2px rgba(124, 58, 237, 0.08) !important;
+  outline: none !important;
+}
+
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #a0a0be !important;
+}
+
+.light-mode option {
+  background-color: #ffffff !important;
+  color: #1a1a2e !important;
+}
+
+/* ── INLINE BACKGROUND UTILITIES ───────────────────────────────────────────── */
+.light-mode .bg-slate-950\/20 {
+  background-color: #f3f1fa !important;
+}
+
+/* Hover states on dark backgrounds */
+.light-mode .hover\:bg-slate-800\/60:hover,
+.light-mode .hover\:bg-slate-800:hover,
+.light-mode .hover\:bg-slate-700:hover,
+.light-mode .hover\:bg-slate-600:hover {
+  background-color: #f0ecfa !important;
+}
+
+/* ── PRIORITY BADGES — bright pastels ──────────────────────────────────────── */
+.light-mode .bg-red-900\/40 {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  border-color: #fecaca !important;
+}
+
+.light-mode .bg-yellow-900\/40 {
+  background-color: #fefce8 !important;
+  color: #ca8a04 !important;
+  border-color: #fef08a !important;
+}
+
+.light-mode .bg-green-900\/40 {
+  background-color: #f0fdf4 !important;
+  color: #16a34a !important;
+  border-color: #bbf7d0 !important;
+}
+
+.light-mode .text-red-300 {
+  color: #dc2626 !important;
+}
+
+.light-mode .text-yellow-300 {
+  color: #ca8a04 !important;
+}
+
+.light-mode .text-green-300 {
+  color: #16a34a !important;
+}
+
+/* Blue label badges */
+.light-mode .bg-blue-900\/30 {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: #bfdbfe !important;
+}
+
+.light-mode .text-blue-300 {
+  color: #2563eb !important;
+}
+
+/* Completed task background */
+.light-mode .bg-green-900\/20 {
+  background-color: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+}
+
+/* ── ACCENT ICON COLORS — saturated and vivid ──────────────────────────────── */
+.light-mode .text-violet-400 {
+  color: #7c3aed !important;
+}
+
+.light-mode .text-blue-400 {
+  color: #3b82f6 !important;
+}
+
+.light-mode .text-emerald-400 {
+  color: #10b981 !important;
+}
+
+.light-mode .text-cyan-400 {
+  color: #06b6d4 !important;
+}
+
+.light-mode .text-orange-400 {
+  color: #f97316 !important;
+}
+
+.light-mode .text-red-400 {
+  color: #ef4444 !important;
+}
+
+/* ── STAT CARDS — Keep gradient icon boxes, lighten card bg ─────────────────── */
+.light-mode [class*="from-blue-600"][class*="to-cyan-600"],
+.light-mode [class*="from-green-600"][class*="to-emerald-600"],
+.light-mode [class*="from-orange-600"][class*="to-red-600"],
+.light-mode [class*="from-violet-600"][class*="to-purple-600"] {
+  /* Keep original gradient colors for icon boxes */
+}
+
+.light-mode .border-blue-700 {
+  border-color: #93c5fd !important;
+}
+
+.light-mode .border-green-700 {
+  border-color: #86efac !important;
+}
+
+.light-mode .border-orange-700 {
+  border-color: #fdba74 !important;
+}
+
+.light-mode .border-violet-700 {
+  border-color: #c4b5fd !important;
+}
+
+/* ── AI / EMERALD SUMMARY CONTAINERS ───────────────────────────────────────── */
+.light-mode .from-emerald-950\/40,
+.light-mode [class*="from-emerald-"][class*="to-emerald-"] {
+  background-image: none !important;
+  background-color: #ecfdf5 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+.light-mode .from-emerald-950\/40 *,
+.light-mode [class*="from-emerald-"][class*="to-emerald-"] * {
+  color: #065f46 !important;
+}
+
+/* ── MARKDOWN / PROSE ──────────────────────────────────────────────────────── */
+.light-mode .prose {
+  color: #374151 !important;
+}
+
+.light-mode .prose strong {
+  color: #111827 !important;
+}
+
+.light-mode .prose h1,
+.light-mode .prose h2,
+.light-mode .prose h3 {
+  color: #111827 !important;
+}
+
+.light-mode .prose code {
+  background-color: #f3f1fa !important;
+  color: #6d28d9 !important;
+  border: 1px solid #e4e0f0 !important;
+}
+
+.light-mode .prose pre {
+  background-color: #f8f7fc !important;
+  border: 1px solid #e4e0f0 !important;
+}
+
+/* ── SIDEBAR NAV BUTTONS ───────────────────────────────────────────────────── */
+.light-mode aside nav button {
+  color: #5c5c7d !important;
+}
+
+.light-mode aside nav button:hover {
+  background-color: #f3f1fa !important;
+  color: #2d1b69 !important;
+}
+
+/* Keep active nav shimmer text white */
+.light-mode aside nav button.text-white,
+.light-mode .nav-active-shimmer + span,
+.light-mode .nav-active-shimmer ~ span {
+  color: #ffffff !important;
+}
+
+/* Active nav items — keep white text on the gradient shimmer */
+.light-mode .nav-active-glow {
+  color: #ffffff !important;
+}
+
+.light-mode .nav-active-glow .text-white,
+.light-mode .nav-active-glow span {
+  color: #ffffff !important;
+}
+
+/* Sidebar tooltips */
+.light-mode aside .bg-slate-800 {
+  background-color: #2d1b69 !important;
+  border-color: #4338ca !important;
+  color: #ffffff !important;
+}
+
+.light-mode aside .border-r-slate-800 {
+  border-right-color: #2d1b69 !important;
+}
+
+/* Sidebar profile avatar border */
+.light-mode .border-violet-500\/40 {
+  border-color: #a78bfa !important;
+}
+
+/* User profile badge in header */
+.light-mode .bg-slate-800\/40 {
+  background-color: #f3f1fa !important;
+}
+
+.light-mode .hover\:bg-slate-800\/60:hover {
+  background-color: #ebe7f7 !important;
+}
+
+/* ── BUTTON OVERRIDES ──────────────────────────────────────────────────────── */
+/* Reset button */
+.light-mode .bg-slate-700 {
+  background-color: #f0ecfa !important;
+  color: #3b3367 !important;
+}
+
+.light-mode .hover\:bg-slate-600:hover {
+  background-color: #e4ddf5 !important;
+}
+
+/* Keep gradient action buttons as-is (blue/cyan/violet gradients) */
+.light-mode [class*="from-blue-600"][class*="to-blue-500"],
+.light-mode [class*="from-blue-600"][class*="to-cyan-600"],
+.light-mode [class*="from-orange-600"][class*="to-red-600"],
+.light-mode [class*="from-violet-600"][class*="to-blue-600"] {
+  color: #ffffff !important;
+}
+
+/* Ensure active gradient buttons keep white text */
+.light-mode [class*="from-blue-600"] .text-white,
+.light-mode [class*="from-violet-600"] .text-white {
+  color: #ffffff !important;
+}
+
+/* ── HEADER BAR ────────────────────────────────────────────────────────────── */
+.light-mode .bg-gradient-to-b.from-slate-900\/95.to-slate-900\/50 {
+  background-image: none !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom-color: #e4e0f0 !important;
+  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.06) !important;
+}
+
+/* ── SCROLLBAR ─────────────────────────────────────────────────────────────── */
+.light-mode ::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: rgba(129, 99, 255, 0.18) !important;
+  border-radius: 3px !important;
+}
+
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 99, 255, 0.35) !important;
+}
+
+/* ── BOTTOM NAV (MOBILE) ───────────────────────────────────────────────────── */
+.light-mode nav.fixed.bottom-0 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #e4e0f0 !important;
+  box-shadow: 0 -2px 12px rgba(129, 99, 255, 0.06) !important;
+}
+
+/* ── BACKDROP BLUR containers ──────────────────────────────────────────────── */
+.light-mode .backdrop-blur-md,
+.light-mode .backdrop-blur-xl {
+  backdrop-filter: blur(16px) saturate(1.2) !important;
+}
+
+/* ── POMODORO TIMER — circle track ─────────────────────────────────────────── */
+.light-mode circle[stroke="#334155"] {
+  stroke: #e4e0f0 !important;
+}
+
+/* ── AUTH PAGE overrides ───────────────────────────────────────────────────── */
+.light-mode .from-slate-950.to-slate-900,
+.light-mode [class*="from-slate-950"][class*="to-slate-900"] {
+  background-image: none !important;
+  background-color: #FAFBFE !important;
+}
+
+/* Emerald badges */
+.light-mode .bg-emerald-450\/10 {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+/* ── LOGO GLOW — softer on light mode ──────────────────────────────────────── */
+.light-mode .logo-glow {
+  box-shadow: 0 0 0 0 rgba(129, 99, 255, 0) !important;
+  animation: logoPulseLight 3s ease-in-out infinite !important;
+}
+
+@keyframes logoPulseLight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(129, 99, 255, 0); }
+  50% { box-shadow: 0 0 16px 3px rgba(129, 99, 255, 0.2); }
+}
+
+/* ── SHADOW OVERRIDES for cards ────────────────────────────────────────────── */
+.light-mode .shadow-lg {
+  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.05), 0 6px 20px -6px rgba(129, 99, 255, 0.08) !important;
+}
+
+.light-mode .shadow-2xl {
+  box-shadow: 0 2px 6px rgba(129, 99, 255, 0.06), 0 12px 32px -8px rgba(129, 99, 255, 0.1) !important;
+}
+
+.light-mode .shadow-xl {
+  box-shadow: 0 1px 4px rgba(129, 99, 255, 0.05), 0 8px 24px -6px rgba(129, 99, 255, 0.09) !important;
+}
+
+/* ── RED BUTTON OVERRIDES ──────────────────────────────────────────────────── */
+.light-mode .border-red-500\/20 {
+  border-color: #fecaca !important;
+}
+
+.light-mode .hover\:bg-red-500\/20:hover {
+  background-color: #fef2f2 !important;
+}
+
+.light-mode .hover\:bg-red-500\/10:hover {
+  background-color: #fef2f2 !important;
+}
+
+.light-mode .hover\:bg-red-900\/30:hover {
+  background-color: #fef2f2 !important;
+}
+
+/* ── MISC ──────────────────────────────────────────────────────────────────── */
+.light-mode .bg-black\/60 {
+  background-color: rgba(129, 99, 255, 0.08) !important;
+}
+
+/* Music player mini player */
+.light-mode .shadow-violet-950\/20 {
+  box-shadow: 0 2px 8px rgba(129, 99, 255, 0.06) !important;
+}
+
+.light-mode .shadow-violet-950\/30 {
+  box-shadow: 0 2px 10px rgba(129, 99, 255, 0.08) !important;
+}
+
+/* Ensure gradient text clip still works for section titles */
+.light-mode .bg-clip-text {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+/* ── THEME TOGGLE BUTTON in light mode — uses inline styles, no override needed ── */
+
