@@ -30,7 +30,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       {/* Blur backdrop */}
-      <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 transition-all duration-300" />
+      <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-lg border-t border-slate-800" />
 
       <div className="relative flex items-center justify-around px-2 py-2 safe-area-inset-bottom">
         {navItems.map((item) => {
@@ -41,8 +41,8 @@ export function BottomNav() {
               onClick={() => setActiveSection(item.id)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[52px] cursor-pointer ${
                 isActive
-                  ? 'text-violet-600 dark:text-white'
-                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+                  ? 'text-white'
+                  : 'text-slate-500 hover:text-slate-350'
               }`}
             >
               {/* Active indicator pill */}
@@ -53,8 +53,8 @@ export function BottomNav() {
               }`}>
                 {item.icon}
               </div>
-              <span className={`text-[10px] font-semibold transition-all duration-200 ${
-                isActive ? 'text-violet-600 dark:text-violet-400' : 'text-slate-400 dark:text-slate-500'
+              <span className={`text-[10px] font-medium transition-all duration-200 ${
+                isActive ? 'text-violet-400' : 'text-slate-550'
               }`}>
                 {item.label}
               </span>

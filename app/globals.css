@@ -280,50 +280,18 @@ nav button, aside button {
 
 /* ── Root Variables ─────────────────────────────────────────────────────────── */
 .light-mode {
-  --background: #FAFBFE;
+  --background: transparent;
   --foreground: #1a1a2e;
-  --orb-1: rgba(129, 99, 255, 0.06);
-  --orb-2: rgba(79, 143, 255, 0.05);
-  --orb-3: rgba(56, 189, 248, 0.03);
-  background-color: #FAFBFE !important;
 }
 
 .light-mode html,
 .light-mode body {
-  background-color: #FAFBFE !important;
-  color: #1a1a2e !important;
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
 }
 
-/* ── Animated Background — Soft pastel aurora ──────────────────────────────── */
-.light-mode .animated-bg {
-  background: linear-gradient(135deg, #f0f0ff 0%, #f8f6ff 40%, #f0f7ff 70%, #faf8ff 100%) !important;
-}
+/* Kept dark glowing animated background in light mode */
 
-.light-mode .animated-bg::before {
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(167, 139, 250, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(96, 165, 250, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(129, 230, 217, 0.08) 0%, transparent 60%) !important;
-}
-
-.light-mode .animated-bg::after {
-  background:
-    radial-gradient(circle 400px at 15% 20%, rgba(167, 139, 250, 0.06) 0%, transparent 70%),
-    radial-gradient(circle 300px at 85% 15%, rgba(96, 165, 250, 0.05) 0%, transparent 70%),
-    radial-gradient(circle 350px at 70% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 70%),
-    radial-gradient(circle 250px at 30% 85%, rgba(167, 139, 250, 0.03) 0%, transparent 70%) !important;
-}
-
-/* Dot grid — barely visible on light */
-.light-mode .bg-grid {
-  background-image:
-    radial-gradient(circle, rgba(129, 99, 255, 0.04) 1px, transparent 1px) !important;
-}
-
-/* Vignette — ultra subtle on light */
-.light-mode .bg-vignette {
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(200, 200, 230, 0.15) 100%) !important;
-}
 
 /* ── CARD & PANEL BACKGROUNDS ──────────────────────────────────────────────── */
 /* Override ALL dark bg-gradient-to-* to clean white cards with colored borders */
@@ -408,27 +376,50 @@ nav button, aside button {
   border-color: #e8e4f3 !important;
 }
 
-/* ── TYPOGRAPHY — rich dark text on light bg ───────────────────────────────── */
-.light-mode .text-white {
+/* ── TYPOGRAPHY — scoped to bright containers so main background text remains readable ── */
+.light-mode [class*="bg-white"] .text-white,
+.light-mode [class*="bg-white/"] .text-white,
+.light-mode [class*="bg-slate-50"] .text-white,
+.light-mode [class*="bg-slate-100"] .text-white,
+.light-mode header .text-white,
+.light-mode .prose .text-white {
   color: #1a1a2e !important;
 }
 
-.light-mode .text-slate-100,
-.light-mode .text-slate-200 {
+.light-mode [class*="bg-white"] .text-slate-100,
+.light-mode [class*="bg-white"] .text-slate-200,
+.light-mode [class*="bg-white/"] .text-slate-100,
+.light-mode [class*="bg-white/"] .text-slate-200,
+.light-mode [class*="bg-slate-50"] .text-slate-100,
+.light-mode [class*="bg-slate-50"] .text-slate-200,
+.light-mode [class*="bg-slate-100"] .text-slate-100,
+.light-mode [class*="bg-slate-100"] .text-slate-200,
+.light-mode header .text-slate-100,
+.light-mode header .text-slate-200 {
   color: #1e1e3a !important;
 }
 
-.light-mode .text-slate-300 {
+.light-mode [class*="bg-white"] .text-slate-300,
+.light-mode [class*="bg-white/"] .text-slate-300,
+.light-mode [class*="bg-slate-50"] .text-slate-300,
+.light-mode header .text-slate-300 {
   color: #2d2d52 !important;
 }
 
-.light-mode .text-slate-400 {
+.light-mode [class*="bg-white"] .text-slate-400,
+.light-mode [class*="bg-white/"] .text-slate-400,
+.light-mode [class*="bg-slate-50"] .text-slate-400,
+.light-mode header .text-slate-400 {
   color: #5c5c7d !important;
 }
 
-.light-mode .text-slate-500 {
+.light-mode [class*="bg-white"] .text-slate-500,
+.light-mode [class*="bg-white/"] .text-slate-500,
+.light-mode [class*="bg-slate-50"] .text-slate-500,
+.light-mode header .text-slate-500 {
   color: #7a7a99 !important;
 }
+
 
 /* Title gradient overrides — dark indigo gradient text */
 .light-mode .bg-gradient-to-r.from-white.to-slate-200 {
