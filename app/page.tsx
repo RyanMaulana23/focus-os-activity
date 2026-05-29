@@ -52,11 +52,11 @@ export default function Home() {
       {/* Main content */}
       <main className="flex-1 md:ml-20 overflow-auto pb-[72px] md:pb-0">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60 transition-all duration-300">
+        <div className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 h-[60px] bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-[#E2E8F0] dark:border-slate-800/60 transition-all duration-300">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition min-h-0 min-w-0"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-850 transition min-h-0 min-w-0"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
@@ -65,7 +65,7 @@ export default function Home() {
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center logo-glow">
                 <span className="text-xs font-bold text-white">F</span>
               </div>
-              <span className="text-sm font-semibold text-white">Focus OS</span>
+              <span className="text-sm font-semibold text-slate-800 dark:text-white">Focus OS</span>
             </div>
           </div>
           
@@ -75,10 +75,10 @@ export default function Home() {
               <img
                 src={currentUser.foto_profil}
                 alt={currentUser.nama}
-                className="w-7 h-7 rounded-full border border-violet-500/50 object-cover"
+                className="w-7 h-7 rounded-full border border-slate-250 dark:border-violet-500/50 object-cover"
               />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-[10px] text-white font-bold border border-violet-500/50">
+              <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-700 dark:text-white font-bold border border-slate-200 dark:border-violet-500/50">
                 {currentUser.nama.slice(0, 2).toUpperCase()}
               </div>
             )}

@@ -51,7 +51,7 @@ export function TaskManager() {
   return (
     <div className="flex flex-col gap-6 h-full">
       {/* Add Task Form */}
-      <div className="flex flex-col gap-4 p-6 bg-white/80 dark:bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
+      <div className="flex flex-col gap-4 p-6 bg-white dark:bg-slate-800 rounded-[20px] border border-slate-200 dark:border-slate-700 shadow-md">
         <h2 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">Add New Task</h2>
         <form onSubmit={handleAdd} className="flex flex-col gap-4">
           <input
@@ -59,38 +59,39 @@ export function TaskManager() {
             placeholder="What needs to be done?"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+            className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
           />
-          <div className="grid grid-cols-3 gap-3 items-end">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as TaskPriority)}
-              className="px-3 py-3 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium cursor-pointer"
+              className="w-full h-12 px-3 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium cursor-pointer"
             >
-              <option value="low" className="bg-white dark:bg-slate-700 text-slate-800 dark:text-white">Low Priority</option>
-              <option value="medium" className="bg-white dark:bg-slate-700 text-slate-800 dark:text-white">Medium Priority</option>
-              <option value="high" className="bg-white dark:bg-slate-700 text-slate-800 dark:text-white">High Priority</option>
+              <option value="low" className="bg-white dark:bg-slate-750 text-slate-800 dark:text-white">Low Priority</option>
+              <option value="medium" className="bg-white dark:bg-slate-750 text-slate-800 dark:text-white">Medium Priority</option>
+              <option value="high" className="bg-white dark:bg-slate-750 text-slate-800 dark:text-white">High Priority</option>
             </select>
             <input
               type="text"
               placeholder="Labels (work, study, personal...)"
               value={labels}
               onChange={(e) => setLabels(e.target.value)}
-              className="px-3 py-3 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm"
+              className="w-full h-12 px-3 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm"
             />
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-lg transition-all font-semibold shadow-lg hover:shadow-blue-500/30 flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 min-h-0 min-w-0"
+              className="w-full h-12 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl transition-all font-semibold shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 min-h-0 min-w-0"
+              style={{ minHeight: '48px' }}
             >
               <Plus className="w-5 h-5" />
-              <span>Add</span>
+              <span>Add Task</span>
             </button>
           </div>
         </form>
       </div>
 
       {/* Tasks List */}
-      <div className="flex flex-col gap-4 p-6 bg-white/80 dark:bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg flex-1 overflow-hidden">
+      <div className="flex flex-col gap-4 p-6 bg-white dark:bg-slate-800 rounded-[20px] border border-slate-200 dark:border-slate-700 shadow-md flex-1 overflow-hidden">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-slate-800 dark:text-white text-lg">
             Tasks ({pendingTasks.length} pending)
@@ -116,12 +117,19 @@ export function TaskManager() {
               >
                 <button
                   onClick={() => toggleTask(task.id)}
-                  className={`flex-shrink-0 w-5 h-5 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer min-h-0 min-w-0 max-h-[20px] max-w-[20px] ${
+                  className={`flex-shrink-0 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${
                     task.status === 'completed'
-                      ? 'border-green-500 bg-green-500 dark:bg-green-500 text-white dark:text-slate-900'
-                      : 'border-slate-400 dark:border-slate-500 hover:border-green-500 hover:bg-green-500/10 dark:hover:bg-green-400/10 text-transparent'
+                      ? 'border-green-500 bg-green-500 text-white'
+                      : 'border-slate-300 dark:border-slate-600 hover:border-green-500 hover:bg-green-500/10 text-transparent'
                   }`}
-                  style={{ minHeight: '20px', minWidth: '20px' }}
+                  style={{
+                    minHeight: '20px',
+                    maxHeight: '20px',
+                    minWidth: '20px',
+                    maxWidth: '20px',
+                    height: '20px',
+                    width: '20px'
+                  }}
                 >
                   <Check className={`w-3.5 h-3.5 stroke-[3px] transition-transform duration-200 ${task.status === 'completed' ? 'scale-100' : 'scale-0'}`} />
                 </button>
@@ -149,8 +157,15 @@ export function TaskManager() {
                 </div>
                 <button
                   onClick={() => deleteTask(task.id)}
-                  className="flex-shrink-0 p-2 hover:bg-red-500/10 dark:hover:bg-red-950/40 rounded-lg transition-colors md:opacity-0 md:group-hover:opacity-100 opacity-100 min-h-0 min-w-0 cursor-pointer"
-                  style={{ minHeight: '36px', minWidth: '36px' }}
+                  className="flex-shrink-0 p-2 hover:bg-red-500/10 dark:hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
+                  style={{
+                    minHeight: '36px',
+                    maxHeight: '36px',
+                    minWidth: '36px',
+                    maxWidth: '36px',
+                    height: '36px',
+                    width: '36px'
+                  }}
                 >
                   <Trash2 className="w-4 h-4 text-red-500 dark:text-red-400" />
                 </button>
@@ -162,4 +177,5 @@ export function TaskManager() {
     </div>
   );
 }
+
 

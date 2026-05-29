@@ -43,67 +43,65 @@ export function PomodoroTimer() {
   const progress = ((currentSessionDuration * 60 - timeLeft) / (currentSessionDuration * 60)) * 100;
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8 bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl border border-slate-700 shadow-lg h-full">
-      <h2 className="text-2xl font-bold text-white">Pomodoro Timer</h2>
+    <div className="flex flex-col items-center gap-6 p-6 bg-white dark:bg-slate-800/50 backdrop-blur-md rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-[0_4px_20px_rgba(15,23,42,0.06)] dark:shadow-2xl h-full">
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white tracking-tight uppercase tracking-wider">Focus Timer</h2>
       
-      <div className="relative w-56 h-56 rounded-full flex items-center justify-center">
+      {/* Timer Circle - 220px Mobile Optimized */}
+      <div className="relative w-[220px] h-[220px] rounded-full flex items-center justify-center">
         <svg className="absolute w-full h-full" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#334155" strokeWidth="2" />
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#E2E8F0" strokeWidth="3" className="dark:stroke-slate-700" />
           <circle
             cx="100"
             cy="100"
-            r="95"
+            r="90"
             fill="none"
-            stroke="url(#gradient)"
-            strokeWidth="4"
-            strokeDasharray={`${(progress / 100) * 597} 597`}
+            stroke="#2563EB"
+            strokeWidth="5"
+            strokeDasharray={`${(progress / 100) * 565} 565`}
             strokeLinecap="round"
             transform="rotate(-90 100 100)"
             style={{ transition: 'stroke-dasharray 0.3s ease' }}
           />
-          <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#06b6d4" />
-            </linearGradient>
-          </defs>
         </svg>
         <div className="absolute flex flex-col items-center justify-center">
-          <div className="text-6xl font-mono font-bold text-white">{formatTime(timeLeft)}</div>
-          <div className="text-xs text-slate-400 mt-2 font-medium uppercase tracking-wider">{currentSessionDuration} min session</div>
+          <div className="text-[32px] font-bold text-slate-900 dark:text-white tracking-tight leading-none">{formatTime(timeLeft)}</div>
+          <div className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-1.5 uppercase tracking-wide">{currentSessionDuration} min session</div>
         </div>
       </div>
 
-      <div className="flex gap-3 w-full px-4">
+      {/* Start & Reset Buttons */}
+      <div className="flex gap-3 w-full">
         <button
           onClick={handleToggle}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ${
+          className={`flex-1 h-[52px] rounded-[14px] font-semibold text-sm transition-all duration-350 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-white ${
             isRunning
-              ? 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700'
-              : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
-          } text-white`}
+              ? 'bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600'
+              : 'bg-gradient-to-br from-[#2563EB] to-[#3B82F6] hover:from-[#1D4ED8] hover:to-[#2563EB]'
+          }`}
         >
           {isRunning ? (
             <>
               <Pause className="w-4 h-4" />
-              Pause
+              <span>Pause</span>
             </>
           ) : (
             <>
               <Play className="w-4 h-4" />
-              Start
+              <span>Start</span>
             </>
           )}
         </button>
         <button
           onClick={handleReset}
-          className="px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors font-semibold"
+          className="w-[52px] h-[52px] flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/60 dark:hover:bg-slate-700 text-slate-750 dark:text-slate-200 rounded-[14px] border border-slate-200 dark:border-slate-600/50 transition-all active:scale-[0.96] cursor-pointer"
+          title="Reset Timer"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
       </div>
 
-      <div className="flex gap-2 w-full px-4">
+      {/* Segmented Duration Control */}
+      <div className="flex gap-2 w-full p-1 bg-slate-100 dark:bg-slate-900/40 rounded-xl border border-slate-200/50 dark:border-slate-800/40">
         {[15, 25, 30].map((min) => (
           <button
             key={min}
@@ -113,10 +111,10 @@ export function PomodoroTimer() {
               setIsRunning(false);
               setSessionFocusTime(0);
             }}
-            className={`flex-1 py-2 rounded-lg transition-all font-semibold text-sm ${
+            className={`flex-1 h-[44px] rounded-lg transition-all font-semibold text-sm cursor-pointer min-h-0 min-w-0 ${
               currentSessionDuration === min
-                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? 'bg-[#2563EB] text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-850/50'
             }`}
           >
             {min}m
@@ -126,3 +124,4 @@ export function PomodoroTimer() {
     </div>
   );
 }
+

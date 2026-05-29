@@ -38,10 +38,9 @@ export function Dashboard() {
   // Responsive classes reused across sections
   const headerClass = [
     'sticky top-0 z-30',
-    'bg-white/90 dark:bg-slate-900/95 backdrop-blur-md',
-    'border-b border-slate-200 dark:border-slate-800/80 shadow-lg',
-    'py-4 px-4 sm:py-6 sm:px-6 lg:px-8',
-    'rounded-b-xl',
+    'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md',
+    'border-b border-[#E2E8F0] dark:border-slate-800/80 shadow-sm',
+    'py-4 px-4 sm:px-6 lg:px-8',
   ].join(' ');
 
   const titleClass   = 'text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent';
@@ -52,7 +51,7 @@ export function Dashboard() {
   const DashboardHeader = ({ title, subtitle }: { title: string; subtitle: string }) => {
     return (
       <header className={headerClass}>
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 w-full">
           <div className="min-w-0">
             <h1 className={titleClass}>{title}</h1>
             <p className={subtitleClass}>{subtitle}</p>
@@ -62,26 +61,27 @@ export function Dashboard() {
             <ThemeToggle />
             
             {currentUser && (
-              <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 backdrop-blur-md hover:bg-slate-200/50 dark:hover:bg-slate-800/60 transition duration-300">
+              <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 backdrop-blur-md shadow-sm hover:shadow-md transition duration-300">
                 {currentUser.foto_profil ? (
                   <img
                     src={currentUser.foto_profil}
                     alt={currentUser.nama}
-                    className="w-8 h-8 rounded-full border border-violet-500/40 object-cover"
+                    className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white border border-violet-500/40">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#EFF6FF] to-[#DBEAFE] text-[#2563EB] dark:from-slate-850 dark:to-slate-800 flex items-center justify-center text-xs font-bold border border-slate-200 dark:border-slate-700">
                     {currentUser.nama.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="hidden sm:block text-left min-w-0 leading-tight">
                   <p className="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[120px]">{currentUser.nama}</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[120px]">@{currentUser.username}</p>
+                  <p className="text-[10px] text-[#64748B] dark:text-slate-400 truncate max-w-[120px]">@{currentUser.username}</p>
                 </div>
                 <button
                   onClick={logout}
-                  className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-650 dark:hover:text-red-400 active:scale-90 transition-all cursor-pointer min-h-0 min-w-0"
+                  className="p-1.5 rounded-lg text-[#64748B] hover:text-red-650 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 active:scale-90 transition-all cursor-pointer min-h-0 min-w-0 flex items-center justify-center"
                   title="Keluar dari Focus OS"
+                  style={{ minHeight: '28px', minWidth: '28px' }}
                 >
                   <LogOut className="w-4 h-4" />
                 </button>

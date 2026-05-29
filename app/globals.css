@@ -280,21 +280,37 @@ nav button, aside button {
 
 /* ── Root Variables ─────────────────────────────────────────────────────────── */
 .light-mode {
-  --background: transparent;
-  --foreground: #1a1a2e;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
 }
 
 .light-mode html,
 .light-mode body {
-  background-color: transparent !important;
-  color: #f1f5f9 !important;
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
 }
 
-/* Kept dark glowing animated background in light mode */
+/* Clear floating orbs and set crisp light background */
+.light-mode .animated-bg {
+  background: #F8FAFC !important;
+}
 
+.light-mode .animated-bg::before,
+.light-mode .animated-bg::after {
+  display: none !important;
+}
+
+.light-mode .bg-grid {
+  background-image:
+    radial-gradient(circle, rgba(148, 163, 184, 0.05) 1px, transparent 1px) !important;
+}
+
+.light-mode .bg-vignette {
+  display: none !important;
+}
 
 /* ── CARD & PANEL BACKGROUNDS ──────────────────────────────────────────────── */
-/* Override ALL dark bg-gradient-to-* to clean white cards with colored borders */
+/* Override ALL dark bg-gradient-to-* to clean white cards with slate borders */
 .light-mode [class*="bg-gradient-to-br"][class*="from-slate-"],
 .light-mode [class*="bg-gradient-to-r"][class*="from-slate-"],
 .light-mode [class*="bg-gradient-to-b"][class*="from-slate-"] {
@@ -333,33 +349,34 @@ nav button, aside button {
   background-color: #ffffff !important;
 }
 
-/* Card container styling — premium shadow with lavender tint */
+/* Card container styling — premium shadow as specified */
 .light-mode [class*="from-slate-800"][class*="to-slate-900"],
 .light-mode [class*="from-slate-800\/50"][class*="to-slate-900\/50"] {
   background-image: none !important;
   background-color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.06), 0 8px 24px -8px rgba(129, 99, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
 }
+
 
 /* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
 .light-mode aside {
-  background-color: rgba(255, 255, 255, 0.96) !important;
-  border-right-color: #e8e4f3 !important;
-  box-shadow: 2px 0 16px rgba(129, 99, 255, 0.04) !important;
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-right-color: #E2E8F0 !important;
+  box-shadow: 2px 0 16px rgba(15, 23, 42, 0.04) !important;
 }
 
 .light-mode aside .backdrop-blur-xl {
   backdrop-filter: blur(20px) saturate(1.2) !important;
 }
 
-/* ── BORDERS — soft lavender tints ─────────────────────────────────────────── */
+/* ── BORDERS — premium slate-200 ─────────────────────────────────────────── */
 .light-mode .border-slate-850,
 .light-mode .border-slate-800,
 .light-mode .border-slate-750,
 .light-mode .border-slate-700,
 .light-mode .border-slate-600,
 .light-mode .border-slate-500 {
-  border-color: #e4e0f0 !important;
+  border-color: #E2E8F0 !important;
 }
 
 .light-mode .border-slate-800\/80,
@@ -369,68 +386,41 @@ nav button, aside button {
 .light-mode .border-slate-700\/50,
 .light-mode .border-slate-700\/40,
 .light-mode .border-slate-600\/50 {
-  border-color: #e8e4f3 !important;
+  border-color: #E2E8F0 !important;
 }
 
 .light-mode .divide-slate-800\/40 > * {
-  border-color: #e8e4f3 !important;
+  border-color: #E2E8F0 !important;
 }
 
-/* ── TYPOGRAPHY — scoped to bright containers so main background text remains readable ── */
-.light-mode [class*="bg-white"] .text-white,
-.light-mode [class*="bg-white/"] .text-white,
-.light-mode [class*="bg-slate-50"] .text-white,
-.light-mode [class*="bg-slate-100"] .text-white,
-.light-mode header .text-white,
-.light-mode .prose .text-white {
-  color: #1a1a2e !important;
+/* ── TYPOGRAPHY — Senior SaaS design tokens ───────────────────────────────── */
+.light-mode .text-white,
+.light-mode .text-slate-50,
+.light-mode .text-slate-100,
+.light-mode .text-slate-200,
+.light-mode .text-slate-300 {
+  color: #0F172A !important;
 }
 
-.light-mode [class*="bg-white"] .text-slate-100,
-.light-mode [class*="bg-white"] .text-slate-200,
-.light-mode [class*="bg-white/"] .text-slate-100,
-.light-mode [class*="bg-white/"] .text-slate-200,
-.light-mode [class*="bg-slate-50"] .text-slate-100,
-.light-mode [class*="bg-slate-50"] .text-slate-200,
-.light-mode [class*="bg-slate-100"] .text-slate-100,
-.light-mode [class*="bg-slate-100"] .text-slate-200,
-.light-mode header .text-slate-100,
-.light-mode header .text-slate-200 {
-  color: #1e1e3a !important;
+.light-mode .text-slate-400 {
+  color: #64748B !important;
 }
 
-.light-mode [class*="bg-white"] .text-slate-300,
-.light-mode [class*="bg-white/"] .text-slate-300,
-.light-mode [class*="bg-slate-50"] .text-slate-300,
-.light-mode header .text-slate-300 {
-  color: #2d2d52 !important;
+.light-mode .text-slate-500 {
+  color: #94A3B8 !important;
 }
 
-.light-mode [class*="bg-white"] .text-slate-400,
-.light-mode [class*="bg-white/"] .text-slate-400,
-.light-mode [class*="bg-slate-50"] .text-slate-400,
-.light-mode header .text-slate-400 {
-  color: #5c5c7d !important;
-}
-
-.light-mode [class*="bg-white"] .text-slate-500,
-.light-mode [class*="bg-white/"] .text-slate-500,
-.light-mode [class*="bg-slate-50"] .text-slate-500,
-.light-mode header .text-slate-500 {
-  color: #7a7a99 !important;
-}
-
-
-/* Title gradient overrides — dark indigo gradient text */
+/* Title gradient overrides — Premium dark blue / indigo slate text */
 .light-mode .bg-gradient-to-r.from-white.to-slate-200 {
-  background-image: linear-gradient(to right, #2d1b69, #4338ca) !important;
+  background-image: linear-gradient(to right, #0F172A, #334155) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
 }
 
 .light-mode .from-white {
-  --tw-gradient-from: #2d1b69 !important;
+  --tw-gradient-from: #0F172A !important;
 }
+
 
 .light-mode .to-slate-200 {
   --tw-gradient-to: #4338ca !important;
