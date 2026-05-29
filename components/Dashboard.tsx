@@ -38,14 +38,14 @@ export function Dashboard() {
   // Responsive classes reused across sections
   const headerClass = [
     'sticky top-0 z-30',
-    'bg-gradient-to-b from-slate-900/95 to-slate-900/50 backdrop-blur-md',
-    'border-b border-slate-800 shadow-lg',
+    'bg-white/90 dark:bg-slate-900/95 backdrop-blur-md',
+    'border-b border-slate-200 dark:border-slate-800/80 shadow-lg',
     'py-4 px-4 sm:py-6 sm:px-6 lg:px-8',
     'rounded-b-xl',
   ].join(' ');
 
-  const titleClass   = 'text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent';
-  const subtitleClass = 'text-xs sm:text-sm text-slate-400 mt-1';
+  const titleClass   = 'text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent';
+  const subtitleClass = 'text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1';
   const contentClass  = 'flex-1 overflow-auto p-4 sm:p-6 lg:p-8';
 
   // Shared reusable premium Header widget
@@ -62,7 +62,7 @@ export function Dashboard() {
             <ThemeToggle />
             
             {currentUser && (
-              <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-md hover:bg-slate-800/60 transition duration-300">
+              <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 backdrop-blur-md hover:bg-slate-200/50 dark:hover:bg-slate-800/60 transition duration-300">
                 {currentUser.foto_profil ? (
                   <img
                     src={currentUser.foto_profil}
@@ -70,17 +70,17 @@ export function Dashboard() {
                     className="w-8 h-8 rounded-full border border-violet-500/40 object-cover"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-white border border-violet-500/40">
+                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white border border-violet-500/40">
                     {currentUser.nama.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="hidden sm:block text-left min-w-0 leading-tight">
-                  <p className="text-xs font-bold text-white truncate max-w-[120px]">{currentUser.nama}</p>
-                  <p className="text-[10px] text-slate-400 truncate max-w-[120px]">@{currentUser.username}</p>
+                  <p className="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[120px]">{currentUser.nama}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[120px]">@{currentUser.username}</p>
                 </div>
                 <button
                   onClick={logout}
-                  className="p-1 rounded-lg text-slate-400 hover:text-red-400 active:scale-90 transition-all cursor-pointer"
+                  className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-650 dark:hover:text-red-400 active:scale-90 transition-all cursor-pointer min-h-0 min-w-0"
                   title="Keluar dari Focus OS"
                 >
                   <LogOut className="w-4 h-4" />
