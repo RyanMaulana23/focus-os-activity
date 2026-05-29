@@ -274,11 +274,9 @@ nav button, aside button {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   PREMIUM LIGHT MODE — Bright, Elegant & Distinct
-   Color Palette: Warm whites, soft lavenders, indigo accents
+   PREMIUM LIGHT MODE — ONLY STYLES STRUCTURAL BACKGROUNDS & FRAMEWORK
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-/* ── Root Variables ─────────────────────────────────────────────────────────── */
 .light-mode {
   --background: #F8FAFC;
   --foreground: #0F172A;
@@ -309,55 +307,6 @@ nav button, aside button {
   display: none !important;
 }
 
-/* ── CARD & PANEL BACKGROUNDS ──────────────────────────────────────────────── */
-/* Override ALL dark bg-gradient-to-* to clean white cards with slate borders */
-.light-mode [class*="bg-gradient-to-br"][class*="from-slate-"],
-.light-mode [class*="bg-gradient-to-r"][class*="from-slate-"],
-.light-mode [class*="bg-gradient-to-b"][class*="from-slate-"] {
-  background-image: none !important;
-  background-color: #ffffff !important;
-}
-
-/* Individual dark backgrounds → bright white */
-.light-mode .bg-slate-950,
-.light-mode .bg-slate-900,
-.light-mode .bg-slate-850,
-.light-mode .bg-slate-800,
-.light-mode .bg-slate-750,
-.light-mode .bg-slate-700 {
-  background-color: #ffffff !important;
-}
-
-/* Opacity variants of dark backgrounds */
-.light-mode .bg-slate-950\/95,
-.light-mode .bg-slate-950\/90,
-.light-mode .bg-slate-950\/60,
-.light-mode .bg-slate-950\/40,
-.light-mode .bg-slate-950\/20,
-.light-mode .bg-slate-900\/95,
-.light-mode .bg-slate-900\/60,
-.light-mode .bg-slate-900\/50,
-.light-mode .bg-slate-900\/40,
-.light-mode .bg-slate-800\/60,
-.light-mode .bg-slate-800\/50,
-.light-mode .bg-slate-800\/40,
-.light-mode .bg-slate-800\/20,
-.light-mode .bg-slate-700\/50,
-.light-mode .bg-slate-700\/40,
-.light-mode .bg-slate-700\/30,
-.light-mode .bg-slate-700\/20 {
-  background-color: #ffffff !important;
-}
-
-/* Card container styling — premium shadow as specified */
-.light-mode [class*="from-slate-800"][class*="to-slate-900"],
-.light-mode [class*="from-slate-800\/50"][class*="to-slate-900\/50"] {
-  background-image: none !important;
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
-}
-
-
 /* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
 .light-mode aside {
   background-color: rgba(255, 255, 255, 0.98) !important;
@@ -369,242 +318,7 @@ nav button, aside button {
   backdrop-filter: blur(20px) saturate(1.2) !important;
 }
 
-/* ── BORDERS — premium slate-200 ─────────────────────────────────────────── */
-.light-mode .border-slate-850,
-.light-mode .border-slate-800,
-.light-mode .border-slate-750,
-.light-mode .border-slate-700,
-.light-mode .border-slate-600,
-.light-mode .border-slate-500 {
-  border-color: #E2E8F0 !important;
-}
-
-.light-mode .border-slate-800\/80,
-.light-mode .border-slate-800\/60,
-.light-mode .border-slate-800\/50,
-.light-mode .border-slate-700\/80,
-.light-mode .border-slate-700\/50,
-.light-mode .border-slate-700\/40,
-.light-mode .border-slate-600\/50 {
-  border-color: #E2E8F0 !important;
-}
-
-.light-mode .divide-slate-800\/40 > * {
-  border-color: #E2E8F0 !important;
-}
-
-/* ── TYPOGRAPHY — Senior SaaS design tokens ───────────────────────────────── */
-.light-mode .text-white,
-.light-mode .text-slate-50,
-.light-mode .text-slate-100,
-.light-mode .text-slate-200,
-.light-mode .text-slate-300 {
-  color: #0F172A !important;
-}
-
-.light-mode .text-slate-400 {
-  color: #64748B !important;
-}
-
-.light-mode .text-slate-500 {
-  color: #94A3B8 !important;
-}
-
-/* Title gradient overrides — Premium dark blue / indigo slate text */
-.light-mode .bg-gradient-to-r.from-white.to-slate-200 {
-  background-image: linear-gradient(to right, #0F172A, #334155) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-}
-
-.light-mode .from-white {
-  --tw-gradient-from: #0F172A !important;
-}
-
-
-.light-mode .to-slate-200 {
-  --tw-gradient-to: #4338ca !important;
-}
-
-/* ── FORM INPUTS — clean with indigo focus ring ────────────────────────────── */
-.light-mode input,
-.light-mode select,
-.light-mode textarea {
-  background-color: #f5f3ff !important;
-  border: 1.5px solid #d4d0e8 !important;
-  color: #1a1a2e !important;
-}
-
-.light-mode input:focus,
-.light-mode select:focus,
-.light-mode textarea:focus {
-  background-color: #ffffff !important;
-  border-color: #7c3aed !important;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12), 0 1px 2px rgba(124, 58, 237, 0.08) !important;
-  outline: none !important;
-}
-
-.light-mode input::placeholder,
-.light-mode textarea::placeholder {
-  color: #a0a0be !important;
-}
-
-.light-mode option {
-  background-color: #ffffff !important;
-  color: #1a1a2e !important;
-}
-
-/* ── INLINE BACKGROUND UTILITIES ───────────────────────────────────────────── */
-.light-mode .bg-slate-950\/20 {
-  background-color: #f3f1fa !important;
-}
-
-/* Hover states on dark backgrounds */
-.light-mode .hover\:bg-slate-800\/60:hover,
-.light-mode .hover\:bg-slate-800:hover,
-.light-mode .hover\:bg-slate-700:hover,
-.light-mode .hover\:bg-slate-600:hover {
-  background-color: #f0ecfa !important;
-}
-
-/* ── PRIORITY BADGES — bright pastels ──────────────────────────────────────── */
-.light-mode .bg-red-900\/40 {
-  background-color: #fef2f2 !important;
-  color: #dc2626 !important;
-  border-color: #fecaca !important;
-}
-
-.light-mode .bg-yellow-900\/40 {
-  background-color: #fefce8 !important;
-  color: #ca8a04 !important;
-  border-color: #fef08a !important;
-}
-
-.light-mode .bg-green-900\/40 {
-  background-color: #f0fdf4 !important;
-  color: #16a34a !important;
-  border-color: #bbf7d0 !important;
-}
-
-.light-mode .text-red-300 {
-  color: #dc2626 !important;
-}
-
-.light-mode .text-yellow-300 {
-  color: #ca8a04 !important;
-}
-
-.light-mode .text-green-300 {
-  color: #16a34a !important;
-}
-
-/* Blue label badges */
-.light-mode .bg-blue-900\/30 {
-  background-color: #eff6ff !important;
-  color: #2563eb !important;
-  border-color: #bfdbfe !important;
-}
-
-.light-mode .text-blue-300 {
-  color: #2563eb !important;
-}
-
-/* Completed task background */
-.light-mode .bg-green-900\/20 {
-  background-color: #f0fdf4 !important;
-  border-color: #bbf7d0 !important;
-}
-
-/* ── ACCENT ICON COLORS — saturated and vivid ──────────────────────────────── */
-.light-mode .text-violet-400 {
-  color: #7c3aed !important;
-}
-
-.light-mode .text-blue-400 {
-  color: #3b82f6 !important;
-}
-
-.light-mode .text-emerald-400 {
-  color: #10b981 !important;
-}
-
-.light-mode .text-cyan-400 {
-  color: #06b6d4 !important;
-}
-
-.light-mode .text-orange-400 {
-  color: #f97316 !important;
-}
-
-.light-mode .text-red-400 {
-  color: #ef4444 !important;
-}
-
-/* ── STAT CARDS — Keep gradient icon boxes, lighten card bg ─────────────────── */
-.light-mode [class*="from-blue-600"][class*="to-cyan-600"],
-.light-mode [class*="from-green-600"][class*="to-emerald-600"],
-.light-mode [class*="from-orange-600"][class*="to-red-600"],
-.light-mode [class*="from-violet-600"][class*="to-purple-600"] {
-  /* Keep original gradient colors for icon boxes */
-}
-
-.light-mode .border-blue-700 {
-  border-color: #93c5fd !important;
-}
-
-.light-mode .border-green-700 {
-  border-color: #86efac !important;
-}
-
-.light-mode .border-orange-700 {
-  border-color: #fdba74 !important;
-}
-
-.light-mode .border-violet-700 {
-  border-color: #c4b5fd !important;
-}
-
-/* ── AI / EMERALD SUMMARY CONTAINERS ───────────────────────────────────────── */
-.light-mode .from-emerald-950\/40,
-.light-mode [class*="from-emerald-"][class*="to-emerald-"] {
-  background-image: none !important;
-  background-color: #ecfdf5 !important;
-  border: 1.5px solid #a7f3d0 !important;
-  color: #065f46 !important;
-}
-
-.light-mode .from-emerald-950\/40 *,
-.light-mode [class*="from-emerald-"][class*="to-emerald-"] * {
-  color: #065f46 !important;
-}
-
-/* ── MARKDOWN / PROSE ──────────────────────────────────────────────────────── */
-.light-mode .prose {
-  color: #374151 !important;
-}
-
-.light-mode .prose strong {
-  color: #111827 !important;
-}
-
-.light-mode .prose h1,
-.light-mode .prose h2,
-.light-mode .prose h3 {
-  color: #111827 !important;
-}
-
-.light-mode .prose code {
-  background-color: #f3f1fa !important;
-  color: #6d28d9 !important;
-  border: 1px solid #e4e0f0 !important;
-}
-
-.light-mode .prose pre {
-  background-color: #f8f7fc !important;
-  border: 1px solid #e4e0f0 !important;
-}
-
-/* ── SIDEBAR NAV BUTTONS ───────────────────────────────────────────────────── */
+/* ── BORDERS — structural borders only ──────────────────────────────────────── */
 .light-mode aside nav button {
   color: #5c5c7d !important;
 }
@@ -647,45 +361,11 @@ nav button, aside button {
   border-color: #a78bfa !important;
 }
 
-/* User profile badge in header */
-.light-mode .bg-slate-800\/40 {
-  background-color: #f3f1fa !important;
-}
-
-.light-mode .hover\:bg-slate-800\/60:hover {
-  background-color: #ebe7f7 !important;
-}
-
-/* ── BUTTON OVERRIDES ──────────────────────────────────────────────────────── */
-/* Reset button */
-.light-mode .bg-slate-700 {
-  background-color: #f0ecfa !important;
-  color: #3b3367 !important;
-}
-
-.light-mode .hover\:bg-slate-600:hover {
-  background-color: #e4ddf5 !important;
-}
-
-/* Keep gradient action buttons as-is (blue/cyan/violet gradients) */
-.light-mode [class*="from-blue-600"][class*="to-blue-500"],
-.light-mode [class*="from-blue-600"][class*="to-cyan-600"],
-.light-mode [class*="from-orange-600"][class*="to-red-600"],
-.light-mode [class*="from-violet-600"][class*="to-blue-600"] {
-  color: #ffffff !important;
-}
-
-/* Ensure active gradient buttons keep white text */
-.light-mode [class*="from-blue-600"] .text-white,
-.light-mode [class*="from-violet-600"] .text-white {
-  color: #ffffff !important;
-}
-
 /* ── HEADER BAR ────────────────────────────────────────────────────────────── */
 .light-mode .bg-gradient-to-b.from-slate-900\/95.to-slate-900\/50 {
   background-image: none !important;
   background-color: rgba(255, 255, 255, 0.92) !important;
-  border-bottom-color: #e4e0f0 !important;
+  border-bottom-color: #E2E8F0 !important;
   box-shadow: 0 1px 3px rgba(129, 99, 255, 0.06) !important;
 }
 
@@ -706,7 +386,7 @@ nav button, aside button {
 /* ── BOTTOM NAV (MOBILE) ───────────────────────────────────────────────────── */
 .light-mode nav.fixed.bottom-0 {
   background-color: rgba(255, 255, 255, 0.95) !important;
-  border-top-color: #e4e0f0 !important;
+  border-top-color: #E2E8F0 !important;
   box-shadow: 0 -2px 12px rgba(129, 99, 255, 0.06) !important;
 }
 
@@ -716,25 +396,7 @@ nav button, aside button {
   backdrop-filter: blur(16px) saturate(1.2) !important;
 }
 
-/* ── POMODORO TIMER — circle track ─────────────────────────────────────────── */
-.light-mode circle[stroke="#334155"] {
-  stroke: #e4e0f0 !important;
-}
-
-/* ── AUTH PAGE overrides ───────────────────────────────────────────────────── */
-.light-mode .from-slate-950.to-slate-900,
-.light-mode [class*="from-slate-950"][class*="to-slate-900"] {
-  background-image: none !important;
-  background-color: #FAFBFE !important;
-}
-
-/* Emerald badges */
-.light-mode .bg-emerald-450\/10 {
-  background-color: #ecfdf5 !important;
-  color: #047857 !important;
-}
-
-/* ── LOGO GLOW — softer on light mode ──────────────────────────────────────── */
+/* ── LOGO GLOW ────────────────────────────────────────────────────────────── */
 .light-mode .logo-glow {
   box-shadow: 0 0 0 0 rgba(129, 99, 255, 0) !important;
   animation: logoPulseLight 3s ease-in-out infinite !important;
@@ -745,56 +407,4 @@ nav button, aside button {
   50% { box-shadow: 0 0 16px 3px rgba(129, 99, 255, 0.2); }
 }
 
-/* ── SHADOW OVERRIDES for cards ────────────────────────────────────────────── */
-.light-mode .shadow-lg {
-  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.05), 0 6px 20px -6px rgba(129, 99, 255, 0.08) !important;
-}
-
-.light-mode .shadow-2xl {
-  box-shadow: 0 2px 6px rgba(129, 99, 255, 0.06), 0 12px 32px -8px rgba(129, 99, 255, 0.1) !important;
-}
-
-.light-mode .shadow-xl {
-  box-shadow: 0 1px 4px rgba(129, 99, 255, 0.05), 0 8px 24px -6px rgba(129, 99, 255, 0.09) !important;
-}
-
-/* ── RED BUTTON OVERRIDES ──────────────────────────────────────────────────── */
-.light-mode .border-red-500\/20 {
-  border-color: #fecaca !important;
-}
-
-.light-mode .hover\:bg-red-500\/20:hover {
-  background-color: #fef2f2 !important;
-}
-
-.light-mode .hover\:bg-red-500\/10:hover {
-  background-color: #fef2f2 !important;
-}
-
-.light-mode .hover\:bg-red-900\/30:hover {
-  background-color: #fef2f2 !important;
-}
-
-/* ── MISC ──────────────────────────────────────────────────────────────────── */
-.light-mode .bg-black\/60 {
-  background-color: rgba(129, 99, 255, 0.08) !important;
-}
-
-/* Music player mini player */
-.light-mode .shadow-violet-950\/20 {
-  box-shadow: 0 2px 8px rgba(129, 99, 255, 0.06) !important;
-}
-
-.light-mode .shadow-violet-950\/30 {
-  box-shadow: 0 2px 10px rgba(129, 99, 255, 0.08) !important;
-}
-
-/* Ensure gradient text clip still works for section titles */
-.light-mode .bg-clip-text {
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  color: transparent !important;
-}
-
-/* ── THEME TOGGLE BUTTON in light mode — uses inline styles, no override needed ── */
 
