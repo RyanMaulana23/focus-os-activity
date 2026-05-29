@@ -11,14 +11,28 @@ import { Menu } from 'lucide-react';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const currentUser = useAuthStore((state) => state.currentUser);
+
+  // Hydration guard: wait until client-side mount before rendering dynamic auth pages
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Load user data on mount / session restoration
   useEffect(() => {
-    if (currentUser) {
+    if (mounted && currentUser) {
       loadUserData(currentUser.id);
     }
-  }, [currentUser]);
+  }, [currentUser, mounted]);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#0a0f1e] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!currentUser) {
     return <AuthPage />;
