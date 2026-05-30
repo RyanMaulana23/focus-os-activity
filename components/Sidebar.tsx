@@ -3,6 +3,7 @@
 import { useUIStore } from '@/lib/stores/uiStore';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -149,109 +150,141 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
 
   return (
     <>
-      {/* ── Mobile Drawer Overlay ─────────────────────────────────────────── */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 backdrop-blur-sm z-40 md:hidden"
-          style={{ background: isLightMode ? 'rgba(15,23,42,0.25)' : 'rgba(0,0,0,0.60)' }}
-          onClick={onMobileClose}
-        />
-      )}
+      {/* ── Mobile Drawer Overlay + Drawer (Framer Motion) ─────────────── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="mobile-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="fixed inset-0 z-40 md:hidden backdrop-blur-[2px]"
+              style={{ background: isLightMode ? 'rgba(15,23,42,0.3)' : 'rgba(0,0,0,0.65)' }}
+              onClick={onMobileClose}
+            />
 
-      {/* ── Mobile Drawer ─────────────────────────────────────────────────── */}
-      <aside
-        className={[
-          'fixed left-0 top-0 h-screen w-72 z-50 flex flex-col md:hidden',
-          !isLightMode && 'bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/60 shadow-2xl shadow-violet-950/30',
-          'transition-transform duration-300 ease-out',
-          mobileOpen ? 'translate-x-0' : '-translate-x-full',
-        ].filter(Boolean).join(' ')}
-        style={isLightMode ? { ...lmSidebarStyle, boxShadow: '4px 0 16px rgba(15,23,42,0.08)' } : undefined}
-      >
-        {/* Mobile header */}
-        <div
-          className="flex items-center justify-between px-5 py-5"
-          style={{ borderBottom: isLightMode ? '1px solid #E4E8F0' : '1px solid rgba(51,65,85,0.6)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 logo-glow" style={{ background: '#5B50F0' }}>
-              <span className="text-lg font-bold text-white">F</span>
-            </div>
-            <div>
-              <h1 className="text-base font-bold" style={{ color: isLightMode ? '#0F172A' : '#FFFFFF' }}>Focus OS</h1>
-              <p className="text-xs" style={{ color: isLightMode ? '#94A3B8' : '#94A3B8' }}>Productivity Suite</p>
-            </div>
-          </div>
-          <button
-            onClick={onMobileClose}
-            className="p-2 rounded-lg transition"
-            style={{ color: isLightMode ? '#94A3B8' : '#94A3B8' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = isLightMode ? '#F1F5F9' : '#1e293b'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+            {/* Drawer panel */}
+            <motion.aside
+              key="mobile-drawer"
+              initial={{ x: -320, opacity: 0.5 }}
+              animate={{ x: 0,    opacity: 1   }}
+              exit={{    x: -320, opacity: 0   }}
+              transition={{ type: 'spring', stiffness: 320, damping: 32, mass: 0.8 }}
+              className="fixed left-0 top-0 h-screen w-72 z-50 flex flex-col md:hidden"
+              style={isLightMode
+                ? { ...lmSidebarStyle, boxShadow: '6px 0 32px rgba(15,23,42,0.12)' }
+                : { background: 'rgba(9,9,11,0.96)', backdropFilter: 'blur(24px)', borderRight: '1px solid rgba(51,65,85,0.6)', boxShadow: '6px 0 32px rgba(0,0,0,0.5)' }
+              }
+            >
+          {/* Mobile header */}
+          <div
+            className="flex items-center justify-between px-5 py-5"
+            style={{ borderBottom: isLightMode ? '1px solid #E4E8F0' : '1px solid rgba(51,65,85,0.6)' }}
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Mobile nav */}
-        <nav className="flex flex-col gap-1 px-3 py-4 flex-1 overflow-y-auto">
-        {sidebarItems.map((item, idx) => {
-            const isActive = activeSection === item.section;
-            if (isLightMode) {
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.section)}
-                  className={[isAnimating ? staggerClass[idx] : '', 'flex items-center gap-4 transition-all duration-200 relative overflow-hidden group'].join(' ')}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: '10px',
-                    background: isActive ? '#EEF0FF' : 'transparent',
-                    color: isActive ? '#5B50F0' : '#64748B',
-                    borderLeft: isActive ? '3px solid #5B50F0' : '3px solid transparent',
-                    fontWeight: isActive ? 600 : 400,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLButtonElement).style.background = '#F5F3FF';
-                      (e.currentTarget as HTMLButtonElement).style.color = '#7C6FF7';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                      (e.currentTarget as HTMLButtonElement).style.color = '#64748B';
-                    }
-                  }}
-                >
-                  <span style={{ color: isActive ? '#5B50F0' : '#94A3B8', transition: 'color 0.2s' }}>{item.icon}</span>
-                  <span className="text-sm">{item.label}</span>
-                </button>
-              );
-            }
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.section)}
-                className={[
-                  isAnimating ? staggerClass[idx] : '',
-                  'flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden',
-                  isActive ? 'text-white nav-active-glow' : 'text-slate-400 hover:text-white hover:bg-slate-800/60',
-                ].join(' ')}
+            <div className="flex items-center gap-3">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.05, type: 'spring', stiffness: 300 }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 logo-glow"
+                style={{ background: '#5B50F0' }}
               >
-                {isActive && <span className="absolute inset-0 nav-active-shimmer rounded-xl opacity-90" aria-hidden="true" />}
-                <span className="relative z-10 flex-shrink-0">{item.icon}</span>
-                <span className="relative z-10 text-sm font-medium">{item.label}</span>
-                {isActive && <span className="absolute left-0 top-2 bottom-2 w-0.5 bg-white/70 rounded-r-full" aria-hidden="true" />}
-              </button>
-            );
-          })}
+                <span className="text-lg font-bold text-white">F</span>
+              </motion.div>
+              <motion.div
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.08 }}
+              >
+                <h1 className="text-base font-bold" style={{ color: isLightMode ? '#0F172A' : '#FFFFFF' }}>Focus OS</h1>
+                <p className="text-xs" style={{ color: '#94A3B8' }}>Productivity Suite</p>
+              </motion.div>
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.85, rotate: 90 }}
+              onClick={onMobileClose}
+              className="p-2 rounded-xl transition"
+              style={{ color: isLightMode ? '#64748B' : '#94A3B8' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = isLightMode ? '#F1F5F9' : '#1e293b'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+            >
+              <X className="w-5 h-5" />
+            </motion.button>
+          </div>
 
-        </nav>
+          {/* Mobile nav — items stagger in */}
+          <nav className="flex flex-col gap-1 px-3 py-4 flex-1 overflow-y-auto">
+          {sidebarItems.map((item, idx) => {
+              const isActive = activeSection === item.section;
+              if (isLightMode) {
+                return (
+                  <motion.button
+                    key={item.id}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.06 + idx * 0.04, type: 'spring', stiffness: 280, damping: 24 }}
+                    onClick={() => handleNavClick(item.section)}
+                    className="flex items-center gap-4 transition-all duration-200 relative overflow-hidden group"
+                    style={{
+                      padding: '10px 16px',
+                      borderRadius: '10px',
+                      background: isActive ? '#EEF0FF' : 'transparent',
+                      color: isActive ? '#5B50F0' : '#64748B',
+                      borderLeft: isActive ? '3px solid #5B50F0' : '3px solid transparent',
+                      fontWeight: isActive ? 600 : 400,
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLButtonElement).style.background = '#F5F3FF';
+                        (e.currentTarget as HTMLButtonElement).style.color = '#7C6FF7';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                        (e.currentTarget as HTMLButtonElement).style.color = '#64748B';
+                      }
+                    }}
+                  >
+                    <span style={{ color: isActive ? '#5B50F0' : '#94A3B8', transition: 'color 0.2s' }}>{item.icon}</span>
+                    <span className="text-sm">{item.label}</span>
+                  </motion.button>
+                );
+              }
+              return (
+                <motion.button
+                  key={item.id}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.06 + idx * 0.04, type: 'spring', stiffness: 280, damping: 24 }}
+                  onClick={() => handleNavClick(item.section)}
+                  className={[
+                    'flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden',
+                    isActive ? 'text-white nav-active-glow' : 'text-slate-400 hover:text-white hover:bg-slate-800/60',
+                  ].join(' ')}
+                >
+                  {isActive && <span className="absolute inset-0 nav-active-shimmer rounded-xl opacity-90" aria-hidden="true" />}
+                  <span className="relative z-10 flex-shrink-0">{item.icon}</span>
+                  <span className="relative z-10 text-sm font-medium">{item.label}</span>
+                  {isActive && <span className="absolute left-0 top-2 bottom-2 w-0.5 bg-white/70 rounded-r-full" aria-hidden="true" />}
+                </motion.button>
+              );
+            })}
 
-        {/* Mobile bottom profile */}
-        {currentUser && (
-          <div className="p-4 space-y-4" style={{ borderTop: isLightMode ? '1px solid #E4E8F0' : '1px solid rgba(51,65,85,0.6)' }}>
+          </nav>
+
+          {/* Mobile bottom profile */}
+          {currentUser && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="p-4 space-y-4"
+              style={{ borderTop: isLightMode ? '1px solid #E4E8F0' : '1px solid rgba(51,65,85,0.6)' }}
+            >
             <div className="flex items-center gap-3">
               {currentUser.foto_profil ? (
                 <img src={currentUser.foto_profil} alt={currentUser.nama} className="w-10 h-10 rounded-xl object-cover" style={{ border: isLightMode ? '1px solid #E4E8F0' : '1px solid rgba(139,92,246,0.4)' }} />
@@ -265,7 +298,8 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
                 <p className="text-xs truncate" style={{ color: isLightMode ? '#475569' : '#94A3B8' }}>@{currentUser.username}</p>
               </div>
             </div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
               onClick={() => { logout(); onMobileClose?.(); }}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm cursor-pointer active:scale-95 transition-all duration-200"
               style={isLightMode
@@ -275,10 +309,13 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
             >
               <LogOut className="w-4 h-4" />
               <span>Log Out</span>
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
-      </aside>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ── Desktop Sidebar ───────────────────────────────────────────────── */}
       <aside

@@ -7,24 +7,28 @@ import { BottomNav } from '@/components/BottomNav';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { AuthPage } from '@/components/AuthPage';
 import { useAuthStore, loadUserData } from '@/lib/stores/authStore';
-import { Menu } from 'lucide-react';
+import { useUIStore } from '@/lib/stores/uiStore';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const currentUser = useAuthStore((state) => state.currentUser);
+  const currentUser  = useAuthStore((state) => state.currentUser);
+  const isLightMode  = useUIStore((s) => s.isLightMode);
+  const LM = isLightMode;
 
-  // Hydration guard: wait until client-side mount before rendering dynamic auth pages
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Load user data on mount / session restoration
   useEffect(() => {
-    if (mounted && currentUser) {
-      loadUserData(currentUser.id);
-    }
+    if (mounted && currentUser) loadUserData(currentUser.id);
   }, [currentUser, mounted]);
+
+  // Lock body scroll when drawer open
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
 
   if (!mounted) {
     return (
@@ -34,13 +38,10 @@ export default function Home() {
     );
   }
 
-  if (!currentUser) {
-    return <AuthPage />;
-  }
+  if (!currentUser) return <AuthPage />;
 
   return (
     <div className="flex h-screen">
-      {/* Animated background layers (aurora + grid + vignette) */}
       <AnimatedBackground />
 
       {/* Sidebar */}
@@ -51,34 +52,99 @@ export default function Home() {
 
       {/* Main content */}
       <main className="flex-1 md:ml-20 overflow-auto pb-[72px] md:pb-0">
-        {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 h-[60px] bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-[#E2E8F0] dark:border-slate-800/60 transition-all duration-300">
+
+        {/* ── Mobile Top Bar ─────────────────────────────────────────────── */}
+        <div
+          className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 h-[60px] backdrop-blur-md transition-all duration-300"
+          style={LM
+            ? { background: 'rgba(255,255,255,0.95)', borderBottom: '1px solid #E4E8F0', boxShadow: '0 1px 12px rgba(15,23,42,0.06)' }
+            : { background: 'rgba(9,9,11,0.85)', borderBottom: '1px solid rgba(30,41,59,0.7)' }
+          }
+        >
+          {/* Left: hamburger + logo */}
           <div className="flex items-center gap-3">
+
+            {/* Animated hamburger button */}
             <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-850 transition min-h-0 min-w-0"
-              aria-label="Open menu"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              className="relative p-2 rounded-xl transition-all duration-200 active:scale-90"
+              style={LM
+                ? { color: '#5B50F0', background: mobileMenuOpen ? '#EEF0FF' : 'transparent' }
+                : { color: '#94A3B8', background: mobileMenuOpen ? 'rgba(91,80,240,0.15)' : 'transparent' }
+              }
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = LM ? '#EEF0FF' : 'rgba(91,80,240,0.12)';
+                (e.currentTarget as HTMLButtonElement).style.color = '#5B50F0';
+              }}
+              onMouseLeave={(e) => {
+                if (!mobileMenuOpen) {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLButtonElement).style.color = LM ? '#5B50F0' : '#94A3B8';
+                }
+              }}
             >
-              <Menu className="w-5 h-5" />
+              <AnimatePresence mode="wait" initial={false}>
+                {mobileMenuOpen ? (
+                  <motion.span
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0,   opacity: 1, scale: 1   }}
+                    exit={{    rotate:  90, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.2, ease: 'easeInOut' }}
+                    className="flex items-center justify-center"
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="menu"
+                    initial={{ rotate: 90,  opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0,   opacity: 1, scale: 1   }}
+                    exit={{    rotate: -90, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.2, ease: 'easeInOut' }}
+                    className="flex items-center justify-center"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
+
+            {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center logo-glow">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center logo-glow"
+                style={{ background: '#5B50F0' }}
+              >
                 <span className="text-xs font-bold text-white">F</span>
               </div>
-              <span className="text-sm font-semibold text-slate-800 dark:text-white">Focus OS</span>
+              <span
+                className="text-sm font-semibold"
+                style={{ color: LM ? '#0F172A' : '#FFFFFF' }}
+              >
+                Focus OS
+              </span>
             </div>
           </div>
-          
-          {/* User Profile Badge for Mobile Navbar */}
+
+          {/* Right: user avatar */}
           <div className="flex items-center gap-2">
             {currentUser.foto_profil ? (
               <img
                 src={currentUser.foto_profil}
                 alt={currentUser.nama}
-                className="w-7 h-7 rounded-full border border-slate-250 dark:border-violet-500/50 object-cover"
+                className="w-8 h-8 rounded-full object-cover"
+                style={{ border: LM ? '2px solid #E4E8F0' : '2px solid rgba(139,92,246,0.5)' }}
               />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-700 dark:text-white font-bold border border-slate-200 dark:border-violet-500/50">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold"
+                style={LM
+                  ? { background: '#EEF0FF', color: '#5B50F0', border: '2px solid #C7D2FE' }
+                  : { background: '#1e293b', color: '#FFFFFF',  border: '2px solid rgba(139,92,246,0.5)' }
+                }
+              >
                 {currentUser.nama.slice(0, 2).toUpperCase()}
               </div>
             )}
@@ -93,4 +159,3 @@ export default function Home() {
     </div>
   );
 }
-
