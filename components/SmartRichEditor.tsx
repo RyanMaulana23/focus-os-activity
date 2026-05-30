@@ -142,7 +142,20 @@ export function SmartRichEditor({
     }
   }, [noteId]);
 
+  // Prevent split screen mode on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768 && mode === 'split') {
+        setMode('edit');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mode]);
+
   // ── Image Handling ───────────────────────────────────────────────────
+
   const insertImageIntoContent = useCallback((imageUrl: string, captionText: string = 'Gambar') => {
     const imageId = `img_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`;
     const newImage: NoteImage = {
@@ -451,91 +464,143 @@ export function SmartRichEditor({
   return (
     <div className={`flex flex-col ${hasActiveMusic ? 'h-[calc(100vh-236px)] md:h-[calc(100vh-140px)]' : 'h-[calc(100vh-140px)]'} bg-slate-900/40 border border-slate-700/60 rounded-2xl overflow-hidden backdrop-blur-xl`}>
       {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-slate-950/80 border-b border-slate-800/80 z-20">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-col bg-slate-950/80 border-b border-slate-800/80 z-20 flex-shrink-0">
+        {/* Row 1: View Modes & AI/Save Actions */}
+        <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-slate-800/30 flex-wrap">
           {/* Editor view modes */}
-          <div className="flex bg-slate-800/80 rounded-lg p-0.5 border border-slate-700/50 mr-2">
-            {(['edit', 'preview', 'split'] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition ${
-                  mode === m
-                    ? 'bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {m === 'edit' ? 'Tulis' : m === 'preview' ? 'Pratinjau' : 'Layar Belah'}
-              </button>
-            ))}
+          <div className="flex bg-slate-800/80 rounded-lg p-0.5 border border-slate-700/50">
+            {(['edit', 'preview', 'split'] as const).map((m) => {
+              if (m === 'split') {
+                return (
+                  <button
+                    key={m}
+                    onClick={() => setMode(m)}
+                    className={`hidden md:block px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition ${
+                      mode === m
+                        ? 'bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-lg'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Layar Belah
+                  </button>
+                );
+              }
+              return (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition ${
+                    mode === m
+                      ? 'bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {m === 'edit' ? 'Tulis' : 'Pratinjau'}
+                </button>
+              );
+            })}
           </div>
 
+          {/* AI Action and Save Status */}
+          <div className="flex items-center gap-2">
+            {saveStatus === 'saving' && (
+              <span className="text-xs text-slate-400">Menyimpan...</span>
+            )}
+            {saveStatus === 'saved' && (
+              <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                <Save className="w-3.5 h-3.5 animate-pulse" /> Tersimpan!
+              </span>
+            )}
+            
+            <button
+              onClick={triggerAiStructuring}
+              disabled={isAiStructuring || !content.trim()}
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-semibold flex items-center gap-1.5 transition-all text-xs disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-violet-600/20 active:scale-95"
+              title="Merapikan & Struktur AI"
+            >
+              {isAiStructuring ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Merapikan AI...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
+                  <span>Rapi & Struktur AI</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Row 2: Formatting options (Horizontally scrollable on mobile) */}
+        <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto whitespace-nowrap scrollbar-none flex-nowrap md:flex-wrap">
           {/* Heading levels */}
           <button
             onClick={() => insertFormatting('# ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Heading 1"
           >
             <Heading1 className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('## ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Heading 2"
           >
             <Heading2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('### ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Heading 3"
           >
             <Heading3 className="w-4 h-4" />
           </button>
 
           {/* Format options */}
-          <div className="w-[1px] h-6 bg-slate-800 mx-1" />
+          <div className="w-[1px] h-6 bg-slate-800 mx-1 flex-shrink-0" />
           <button
             onClick={() => insertFormatting('**', '**')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Tebal (Bold)"
           >
             <Bold className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('*', '*')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Miring (Italic)"
           >
             <Italic className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('<u>', '</u>')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Garis Bawah (Underline)"
           >
             <Underline className="w-4 h-4" />
           </button>
 
           {/* Structure Helpers */}
-          <div className="w-[1px] h-6 bg-slate-800 mx-1" />
+          <div className="w-[1px] h-6 bg-slate-800 mx-1 flex-shrink-0" />
           <button
             onClick={() => insertFormatting('- ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Poin Bullet"
           >
             <List className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('1. ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Daftar Angka"
           >
             <ListOrdered className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('- [ ] ', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Daftar Ceklis"
           >
             <CheckSquare className="w-4 h-4" />
@@ -544,31 +609,31 @@ export function SmartRichEditor({
           {/* Special Elements */}
           <button
             onClick={() => insertFormatting('```javascript\n', '\n```')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Blok Kode Program"
           >
             <Code className="w-4 h-4" />
           </button>
           <button
             onClick={() => insertFormatting('$$\n', '\n$$')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Rumus Matematika LaTeX"
           >
             <span className="font-serif font-bold text-xs select-none">Σx</span>
           </button>
           <button
             onClick={() => insertFormatting('| Kolom 1 | Kolom 2 |\n|---|---|\n| Baris 1 | Data |\n', '')}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition flex-shrink-0"
             title="Sisipkan Tabel"
           >
             <TableIcon className="w-4 h-4" />
           </button>
 
           {/* Image Insertion */}
-          <div className="w-[1px] h-6 bg-slate-800 mx-1" />
+          <div className="w-[1px] h-6 bg-slate-800 mx-1 flex-shrink-0" />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-600 hover:to-cyan-600 rounded-lg text-white font-medium flex items-center gap-1.5 transition text-xs shadow-md"
+            className="p-2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-600 hover:to-cyan-600 rounded-lg text-white font-medium flex items-center gap-1.5 transition text-xs shadow-md flex-shrink-0"
             title="Unggah Gambar"
           >
             <ImageIcon className="w-3.5 h-3.5" />
@@ -583,38 +648,8 @@ export function SmartRichEditor({
             multiple
           />
         </div>
-
-        {/* AI Action */}
-        <div className="flex items-center gap-2">
-          {saveStatus === 'saving' && (
-            <span className="text-xs text-slate-400">Menyimpan...</span>
-          )}
-          {saveStatus === 'saved' && (
-            <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
-              <Save className="w-3.5 h-3.5 animate-pulse" /> Tersimpan!
-            </span>
-          )}
-          
-          <button
-            onClick={triggerAiStructuring}
-            disabled={isAiStructuring || !content.trim()}
-            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-semibold flex items-center gap-1.5 transition-all text-xs disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-violet-600/20 active:scale-95"
-            title="Merapikan & Merapikan Catatan Secara Instan dengan AI Heuristik"
-          >
-            {isAiStructuring ? (
-              <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Merapikan AI...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
-                <span>Rapi & Struktur AI</span>
-              </>
-            )}
-          </button>
-        </div>
       </div>
+
 
       {/* Editor Body */}
       <div className="flex-1 flex overflow-hidden bg-slate-950/20 relative" onDragOver={handleDragOver} onDrop={handleDrop}>
@@ -664,14 +699,14 @@ export function SmartRichEditor({
                 className="w-full bg-transparent text-lg font-bold text-white border-0 border-b border-slate-800 focus:border-violet-500 focus:ring-0 pb-1.5 placeholder-slate-500 transition-colors"
               />
 
-              <div className="flex items-center gap-4 flex-wrap text-xs">
+              <div className="grid grid-cols-2 md:flex md:items-center gap-3 md:gap-4 text-xs">
                 {/* Category selector */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400 font-medium">Kategori:</span>
+                <div className="flex items-center gap-1.5 col-span-1">
+                  <span className="text-slate-400 font-medium shrink-0">Kategori:</span>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as any)}
-                    className="bg-slate-800 border border-slate-700/80 text-slate-300 rounded px-2.5 py-1 focus:ring-1 focus:ring-violet-500 outline-none"
+                    className="bg-slate-800 border border-slate-700/80 text-slate-300 rounded px-2.5 py-1 focus:ring-1 focus:ring-violet-500 outline-none w-full text-xs"
                   >
                     <option value="material">Materi Ajar</option>
                     <option value="task">Tugas</option>
@@ -680,29 +715,31 @@ export function SmartRichEditor({
                 </div>
 
                 {/* Folder Selector */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400 font-medium">Folder:</span>
-                  <select
-                    value={folderId || ''}
-                    onChange={(e) => setFolderId(e.target.value || undefined)}
-                    className="bg-slate-800 border border-slate-700/80 text-slate-300 rounded px-2.5 py-1 focus:ring-1 focus:ring-violet-500 outline-none max-w-[120px]"
-                  >
-                    <option value="">(Tanpa Folder)</option>
-                    {folders.map((f) => (
-                      <option key={f.id} value={f.id}>{f.name}</option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleAddFolder}
-                    className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition"
-                    title="Tambah Folder Baru"
-                  >
-                    <FolderPlus className="w-3.5 h-3.5" />
-                  </button>
+                <div className="flex items-center gap-1.5 col-span-1">
+                  <span className="text-slate-400 font-medium shrink-0">Folder:</span>
+                  <div className="flex items-center gap-1 w-full">
+                    <select
+                      value={folderId || ''}
+                      onChange={(e) => setFolderId(e.target.value || undefined)}
+                      className="bg-slate-800 border border-slate-700/80 text-slate-300 rounded px-2.5 py-1 focus:ring-1 focus:ring-violet-500 outline-none w-full text-xs"
+                    >
+                      <option value="">(Tanpa Folder)</option>
+                      {folders.map((f) => (
+                        <option key={f.id} value={f.id}>{f.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={handleAddFolder}
+                      className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition shrink-0"
+                      title="Tambah Folder Baru"
+                    >
+                      <FolderPlus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Tag Input */}
-                <div className="flex items-center gap-1.5 flex-1 min-w-[200px]">
+                <div className="flex items-center gap-1.5 col-span-2 md:flex-1 md:min-w-[200px]">
                   <Tag className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
                   <div className="flex flex-wrap gap-1 items-center bg-slate-800 border border-slate-700/80 rounded px-2 py-0.5 w-full">
                     {tags.map((t) => (
@@ -726,6 +763,7 @@ export function SmartRichEditor({
                 </div>
               </div>
             </div>
+
 
             {/* Content Textarea */}
             <div className="flex-1 relative">

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 import { useNotesStore } from '@/lib/stores/notesStore';
 import { useDocumentStore } from '@/lib/stores/documentStore';
 import {
@@ -26,6 +27,40 @@ function FileViewerModal({
   const isPdf = note.fileMimeType === 'application/pdf';
   const isImage = note.fileMimeType?.startsWith('image/');
   const hasDataUrl = !!note.fileDataUrl;
+  const [pdfUrl, setPdfUrl] = useState<string>('');
+
+  useEffect(() => {
+    if (isPdf && note.fileDataUrl) {
+      let url = note.fileDataUrl;
+      let isBlobCreated = false;
+
+      if (note.fileDataUrl.startsWith('data:')) {
+        try {
+          const arr = note.fileDataUrl.split(',');
+          const mimeMatch = arr[0].match(/:(.*?);/);
+          const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          const blob = new Blob([u8arr], { type: mime });
+          url = URL.createObjectURL(blob);
+          isBlobCreated = true;
+        } catch (e) {
+          console.error('Failed to convert base64 to blob url:', e);
+        }
+      }
+      setPdfUrl(url);
+
+      return () => {
+        if (isBlobCreated && url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      };
+    }
+  }, [note.fileDataUrl, isPdf]);
 
   return (
     <div
@@ -59,11 +94,12 @@ function FileViewerModal({
           {hasDataUrl && isPdf ? (
             // PDF Viewer via <iframe>
             <iframe
-              src={note.fileDataUrl}
+              src={pdfUrl}
               className="w-full h-full border-0"
               title={`Preview: ${note.title}`}
             />
           ) : hasDataUrl && isImage ? (
+
             // Image Viewer
             <div className="h-full overflow-auto flex items-center justify-center p-6 bg-slate-950">
               {/* eslint-disable-next-line @next/next/no-img-element */}
