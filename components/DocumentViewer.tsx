@@ -893,7 +893,11 @@ export function DocumentViewer() {
                       {activeDoc && (
                         <button
                           onClick={() => setIsUploadingNew(false)}
-                          className="p-2.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 rounded-xl transition"
+                          className="p-2.5 rounded-xl transition"
+                          style={LM
+                            ? { background: '#EEF0FF', border: '1px solid #C7D2FE', color: '#5B50F0' }
+                            : { background: 'rgba(30,41,59,0.8)', border: '1px solid #334155', color: '#CBD5E1' }
+                          }
                         >
                           <ArrowLeft className="w-4 h-4" />
                         </button>
@@ -911,12 +915,16 @@ export function DocumentViewer() {
                     {/* Mobile only toggle on upload screen */}
                     <button
                       onClick={() => setIsMobileSidebarOpen(true)}
-                      className="md:hidden p-2.5 bg-slate-800/80 hover:bg-slate-750 border border-slate-700 text-slate-300 rounded-xl transition flex items-center gap-2"
+                      className="md:hidden p-2.5 rounded-xl transition flex items-center gap-2"
+                      style={LM
+                        ? { background: '#EEF0FF', border: '1px solid #C7D2FE', color: '#5B50F0' }
+                        : { background: 'rgba(30,41,59,0.8)', border: '1px solid #334155', color: '#CBD5E1' }
+                      }
                       title="Lihat dokumen tersimpan"
                     >
-                      <FolderOpen className="w-4 h-4 text-violet-400" />
+                      <FolderOpen className="w-4 h-4" style={{ color: '#5B50F0' }} />
                       {documents.length > 0 && (
-                        <span className="bg-violet-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <span className="text-white text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: '#5B50F0' }}>
                           {documents.length}
                         </span>
                       )}

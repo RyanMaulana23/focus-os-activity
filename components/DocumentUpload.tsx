@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useDocumentStore } from '@/lib/stores/documentStore';
 import { useUIStore } from '@/lib/stores/uiStore';
-import { Upload, File, CheckCircle2, Loader2 } from 'lucide-react';
+import { Upload, File, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function DocumentUpload() {
@@ -51,26 +51,30 @@ export function DocumentUpload() {
 
   const activeUploads = Object.entries(uploadProgress);
 
+  // ── Color tokens per mode ───────────────────────────────────────────────
+  // In light mode: indigo gradient header + white text on it.
+  // Drop zone stays clean white with soft border.
+  const dropzoneBg     = isDragActive
+    ? (LM ? 'rgba(91,80,240,0.06)' : 'rgba(91,80,240,0.15)')
+    : (LM ? '#FFFFFF' : 'rgba(30,41,59,0.4)');
+  const dropzoneBorder = isDragActive ? '#5B50F0' : (LM ? '#CBD5E1' : '#334155');
+
   return (
-    <div className="space-y-6">
-      {/* ── Dropzone ──────────────────────────────────────────────────────────── */}
+    <div className="space-y-5">
+      {/* ── Drop Zone ──────────────────────────────────────────────────────── */}
       <motion.div
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
         onDragLeave={handleDrag}
         onDrop={handleDrop}
         layout
-        className="relative overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-300 cursor-pointer"
-        style={isDragActive
-          ? { borderColor: '#5B50F0', background: LM ? 'rgba(91,80,240,0.04)' : 'rgba(91,80,240,0.1)', transform: 'scale(1.01)' }
-          : LM
-            ? { borderColor: '#CBD5E1', background: '#FFFFFF' }
-            : { borderColor: '#334155', background: 'rgba(30,41,59,0.4)' }
-        }
+        className="relative overflow-hidden rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-300"
+        style={{ background: dropzoneBg, borderColor: dropzoneBorder }}
+        onClick={() => fileInputRef.current?.click()}
         onMouseEnter={(e) => {
           if (!isDragActive) {
             (e.currentTarget as HTMLDivElement).style.borderColor = '#5B50F0';
-            (e.currentTarget as HTMLDivElement).style.background = LM ? 'rgba(91,80,240,0.02)' : 'rgba(30,41,59,0.6)';
+            (e.currentTarget as HTMLDivElement).style.background = LM ? 'rgba(91,80,240,0.03)' : 'rgba(30,41,59,0.6)';
           }
         }}
         onMouseLeave={(e) => {
@@ -79,63 +83,78 @@ export function DocumentUpload() {
             (e.currentTarget as HTMLDivElement).style.background = LM ? '#FFFFFF' : 'rgba(30,41,59,0.4)';
           }
         }}
-        onClick={() => fileInputRef.current?.click()}
       >
         <input ref={fileInputRef} type="file" multiple accept=".docx,.doc" onChange={handleChange} className="hidden" />
 
-        <div className="flex flex-col items-center justify-center space-y-4">
-          {/* Upload Icon */}
+        {/* ── Inner gradient header band ─────────────────────────────────── */}
+        <div
+          className="px-8 pt-8 pb-6 flex flex-col items-center gap-4"
+          style={{ background: LM ? 'linear-gradient(135deg, #5B50F0 0%, #7C3AED 100%)' : 'transparent' }}
+        >
+          {/* Upload icon */}
           <motion.div
             animate={isDragActive ? { scale: 1.15, y: -4 } : { scale: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 15 }}
             className="p-4 rounded-full"
             style={isDragActive
-              ? { background: '#5B50F0', color: '#FFFFFF', boxShadow: '0 8px 24px rgba(91,80,240,0.3)' }
+              ? { background: LM ? 'rgba(255,255,255,0.25)' : '#5B50F0', color: '#FFFFFF', boxShadow: '0 8px 24px rgba(255,255,255,0.2)' }
               : LM
-                ? { background: '#EEF0FF', color: '#5B50F0' }
+                ? { background: 'rgba(255,255,255,0.18)', color: '#FFFFFF' }
                 : { background: 'rgba(51,65,85,0.5)', color: '#94A3B8' }
             }
           >
             <Upload className="w-8 h-8" />
           </motion.div>
 
-          <div className="space-y-2 max-w-md">
-            <h3 className="text-lg font-bold" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>Upload File Word</h3>
-            <p className="text-sm" style={{ color: LM ? '#64748B' : '#94A3B8' }}>
+          <div className="space-y-1.5 text-center max-w-sm">
+            <h3 className="text-lg font-bold" style={{ color: LM ? '#FFFFFF' : '#FFFFFF' }}>
+              Upload File Word
+            </h3>
+            <p className="text-sm" style={{ color: LM ? 'rgba(255,255,255,0.75)' : '#94A3B8' }}>
               Drag &amp; drop file{' '}
-              <strong style={{ color: '#5B50F0' }}>.docx</strong>{' '}
+              <strong style={{ color: LM ? '#FDE68A' : '#A78BFA' }}>.docx</strong>{' '}
               atau{' '}
-              <strong style={{ color: LM ? '#2563EB' : '#60A5FA' }}>.doc</strong>{' '}
+              <strong style={{ color: LM ? '#BAE6FD' : '#60A5FA' }}>.doc</strong>{' '}
               di sini, atau klik tombol di bawah untuk menelusuri folder.
             </p>
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="button"
             onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-            className="px-6 py-2.5 text-white font-semibold rounded-xl shadow-lg flex items-center gap-2 transition-all"
-            style={{ background: '#5B50F0', boxShadow: '0 4px 14px rgba(91,80,240,0.3)' }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#4A40E0')}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#5B50F0')}
+            className="px-6 py-2.5 font-semibold rounded-xl flex items-center gap-2 transition-all"
+            style={LM
+              ? { background: '#FFFFFF', color: '#5B50F0', boxShadow: '0 4px 14px rgba(0,0,0,0.15)' }
+              : { background: '#5B50F0', color: '#FFFFFF', boxShadow: '0 4px 14px rgba(91,80,240,0.3)' }
+            }
+            onMouseEnter={(e) => {
+              const btn = e.currentTarget as HTMLButtonElement;
+              btn.style.background = LM ? '#F5F3FF' : '#4A40E0';
+            }}
+            onMouseLeave={(e) => {
+              const btn = e.currentTarget as HTMLButtonElement;
+              btn.style.background = LM ? '#FFFFFF' : '#5B50F0';
+            }}
           >
             Pilih Berkas Word
           </motion.button>
-
-          <p className="text-xs" style={{ color: '#94A3B8' }}>Mendukung multi-file upload · Ukuran maksimal 20MB per berkas</p>
         </div>
 
-        {/* Subtle glow decorations */}
-        {!LM && (
-          <>
-            <div className="absolute -right-24 -top-24 w-48 h-48 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
-            <div className="absolute -left-24 -bottom-24 w-48 h-48 rounded-full bg-blue-600/5 blur-3xl pointer-events-none" />
-          </>
-        )}
+        {/* ── Footer hint ───────────────────────────────────────────────── */}
+        <div
+          className="px-8 py-3 text-center text-xs"
+          style={LM
+            ? { background: '#F8FAFC', borderTop: '1px solid #E4E8F0', color: '#94A3B8' }
+            : { color: '#64748B' }
+          }
+        >
+          Mendukung multi-file upload · Ukuran maksimal 20MB per berkas
+        </div>
       </motion.div>
 
-      {/* ── Privacy Notice ────────────────────────────────────────────────────── */}
+      {/* ── Privacy Notice ─────────────────────────────────────────────────── */}
       <div
         className="flex items-start gap-3 p-4 rounded-xl text-sm"
         style={LM
@@ -145,14 +164,14 @@ export function DocumentUpload() {
       >
         <span className="text-lg mt-0.5">🔒</span>
         <div>
-          <p className="font-semibold" style={{ color: LM ? '#0F172A' : '#E0E7FF' }}>Privasi Terjamin Penuh</p>
-          <p className="text-xs mt-0.5" style={{ color: LM ? '#64748B' : '#94A3B8' }}>
-            Semua pemrosesan, visualisasi, dan ekstraksi teks dilakukan secara lokal 100% di browser Anda. Tidak ada data berkas yang dikirim ke server luar.
+          <p className="font-semibold" style={{ color: LM ? '#3730A3' : '#E0E7FF' }}>Privasi Terjamin Penuh</p>
+          <p className="text-xs mt-0.5" style={{ color: LM ? '#6366F1' : '#94A3B8' }}>
+            Semua pemrosesan dilakukan secara lokal 100% di browser Anda. Tidak ada data berkas yang dikirim ke server luar.
           </p>
         </div>
       </div>
 
-      {/* ── Active Progress ────────────────────────────────────────────────────── */}
+      {/* ── Upload Progress ─────────────────────────────────────────────────── */}
       <AnimatePresence>
         {activeUploads.length > 0 && (
           <motion.div

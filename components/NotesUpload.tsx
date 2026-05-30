@@ -150,46 +150,52 @@ export function NotesUpload() {
 
   return (
     <div
-      className="rounded-xl p-4 sm:p-8 shadow-lg"
+      className="rounded-2xl overflow-hidden shadow-lg"
       style={LM
-        ? { background: '#FFFFFF', border: '1px solid #E4E8F0', boxShadow: '0 1px 4px rgba(15,23,42,0.06)' }
+        ? { border: '1px solid #E4E8F0', boxShadow: '0 4px 20px rgba(91,80,240,0.08)' }
         : { background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', border: '1px solid #334155' }
       }
     >
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      {/* ── Header band (always indigo gradient) ── */}
+      <div
+        className="px-4 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        style={{ background: 'linear-gradient(135deg, #5B50F0 0%, #7C3AED 100%)' }}
+      >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg" style={{ background: '#5B50F0' }}>
-            <Upload className="w-5 h-5 text-white" />
+          <div className="p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.18)' }}>
+            <Upload className="w-5 h-5" style={{ color: '#FFFFFF' }} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>Upload Catatan</h2>
-            <p className="text-xs mt-0.5" style={{ color: '#94A3B8' }}>Ringkasan otomatis dibuat saat upload</p>
+            <h2 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>Upload Catatan</h2>
+            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>Ringkasan otomatis dibuat saat upload</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="px-4 py-2 rounded-xl text-white font-bold flex items-center gap-2 hover:shadow-lg transition text-sm active:scale-95 shadow-md hover:scale-[1.02]"
-            style={{ background: '#5B50F0' }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#4A40E0')}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#5B50F0')}
+            className="px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition text-sm active:scale-95"
+            style={{ background: 'rgba(255,255,255,0.18)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.28)')}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.18)')}
           >
-            <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
+            <Sparkles className="w-4 h-4" style={{ color: '#FDE68A' }} />
             <span>Tulis Catatan Modern ✨</span>
           </button>
           <div
             className="hidden sm:flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full"
-            style={LM
-              ? { background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }
-              : { background: 'rgba(52,211,153,0.1)', color: '#34D399', border: '1px solid rgba(52,211,153,0.3)' }
-            }
+            style={{ background: 'rgba(255,255,255,0.15)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.2)' }}
           >
             <Sparkles className="w-3 h-3" /> Auto-Ringkas
           </div>
         </div>
       </div>
+
+      {/* ── Body ── */}
+      <div
+        className="p-4 sm:p-8"
+        style={LM ? { background: '#FFFFFF' } : { background: 'transparent' }}
+      >
 
       {/* Error */}
       {error && (
@@ -359,6 +365,7 @@ export function NotesUpload() {
           </button>
         </div>
       </form>
+      </div>{/* end body */}
     </div>
   );
 }
