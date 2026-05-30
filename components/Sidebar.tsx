@@ -195,14 +195,14 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
 
         {/* Mobile nav */}
         <nav className="flex flex-col gap-1 px-3 py-4 flex-1 overflow-y-auto">
-          {sidebarItems.map((item, idx) => {
+        {sidebarItems.map((item, idx) => {
             const isActive = activeSection === item.section;
             if (isLightMode) {
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.section)}
-                  className={[isAnimating ? staggerClass[idx] : '', 'flex items-center gap-4 transition-all duration-200 relative overflow-hidden'].join(' ')}
+                  className={[isAnimating ? staggerClass[idx] : '', 'flex items-center gap-4 transition-all duration-200 relative overflow-hidden group'].join(' ')}
                   style={{
                     padding: '10px 16px',
                     borderRadius: '10px',
@@ -211,8 +211,20 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
                     borderLeft: isActive ? '3px solid #5B50F0' : '3px solid transparent',
                     fontWeight: isActive ? 600 : 400,
                   }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background = '#F5F3FF';
+                      (e.currentTarget as HTMLButtonElement).style.color = '#7C6FF7';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                      (e.currentTarget as HTMLButtonElement).style.color = '#64748B';
+                    }
+                  }}
                 >
-                  <span style={{ color: isActive ? '#5B50F0' : '#94A3B8' }}>{item.icon}</span>
+                  <span style={{ color: isActive ? '#5B50F0' : '#94A3B8', transition: 'color 0.2s' }}>{item.icon}</span>
                   <span className="text-sm">{item.label}</span>
                 </button>
               );
@@ -234,6 +246,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
               </button>
             );
           })}
+
         </nav>
 
         {/* Mobile bottom profile */}
