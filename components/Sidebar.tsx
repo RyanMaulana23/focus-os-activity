@@ -158,7 +158,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="fixed inset-0 z-40 md:hidden backdrop-blur-[2px]"
+              className="fixed inset-0 z-[100] md:hidden backdrop-blur-[2px]"
               style={{ background: isLightMode ? 'rgba(15,23,42,0.3)' : 'rgba(0,0,0,0.65)' }}
               onClick={onMobileClose}
             />
@@ -170,7 +170,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
               animate={{ x: 0,    opacity: 1   }}
               exit={{    x: -320, opacity: 0   }}
               transition={{ type: 'spring', stiffness: 320, damping: 32, mass: 0.8 }}
-              className="fixed left-0 top-0 h-screen w-72 z-50 flex flex-col md:hidden"
+              className="fixed left-0 top-0 h-screen w-72 z-[110] flex flex-col md:hidden"
               style={isLightMode
                 ? { ...lmSidebarStyle, boxShadow: '6px 0 32px rgba(15,23,42,0.12)' }
                 : { background: 'rgba(9,9,11,0.96)', backdropFilter: 'blur(24px)', borderRight: '1px solid rgba(51,65,85,0.6)', boxShadow: '6px 0 32px rgba(0,0,0,0.5)' }
