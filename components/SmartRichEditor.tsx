@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { renderMarkdownAndKatex } from '@/lib/utils/markdownParser';
+import { usePlaylistStore } from '@/lib/stores/playlistStore';
+
 
 
 interface SmartRichEditorProps {
@@ -54,6 +56,9 @@ export function SmartRichEditor({
   const addNote = useNotesStore((s) => s.addNote);
   const updateNote = useNotesStore((s) => s.updateNote);
   const notes = useNotesStore((s) => s.notes);
+  const currentSong = usePlaylistStore((s) => s.currentSong);
+  const hasActiveMusic = !!currentSong;
+
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -444,7 +449,7 @@ export function SmartRichEditor({
 
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] bg-slate-900/40 border border-slate-700/60 rounded-2xl overflow-hidden backdrop-blur-xl">
+    <div className={`flex flex-col ${hasActiveMusic ? 'h-[calc(100vh-236px)] md:h-[calc(100vh-140px)]' : 'h-[calc(100vh-140px)]'} bg-slate-900/40 border border-slate-700/60 rounded-2xl overflow-hidden backdrop-blur-xl`}>
       {/* Top Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-slate-950/80 border-b border-slate-800/80 z-20">
         <div className="flex items-center gap-2 flex-wrap">
