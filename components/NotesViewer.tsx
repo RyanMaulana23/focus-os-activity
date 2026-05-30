@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 import { useNotesStore } from '@/lib/stores/notesStore';
 import { useDocumentStore } from '@/lib/stores/documentStore';
+import { useUIStore } from '@/lib/stores/uiStore';
+
 import {
   Trash2, FileText, ChevronDown, ChevronUp,
   Eye, X, Sparkles, BookOpen, Edit2, Bookmark, BookmarkCheck,
@@ -28,6 +30,18 @@ function FileViewerModal({
   const isImage = note.fileMimeType?.startsWith('image/');
   const hasDataUrl = !!note.fileDataUrl;
   const [pdfUrl, setPdfUrl] = useState<string>('');
+  const { isLightMode } = useUIStore();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgentMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(window.innerWidth < 768 || userAgentMobile);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (isPdf && note.fileDataUrl) {
@@ -92,13 +106,58 @@ function FileViewerModal({
         {/* Content */}
         <div className="flex-1 overflow-hidden">
           {hasDataUrl && isPdf ? (
-            // PDF Viewer via <iframe>
-            <iframe
-              src={pdfUrl}
-              className="w-full h-full border-0"
-              title={`Preview: ${note.title}`}
-            />
+            isMobile ? (
+              // Mobile PDF View: Show download card + extracted text preview
+              <div className="h-full overflow-y-auto p-5 bg-slate-950/20 flex flex-col gap-6 scrollbar-none">
+                <div
+                  className="p-5 rounded-2xl flex flex-col items-center text-center gap-4 max-w-xl mx-auto w-full transition-all duration-300"
+                  style={isLightMode 
+                    ? { background: '#FFFFFF', border: '1px solid #E4E8F0', boxShadow: '0 4px 24px rgba(15,23,42,0.06)' }
+                    : { background: 'rgba(30,41,59,0.4)', border: '1px solid rgba(51,65,85,0.4)', backdropFilter: 'blur(12px)' }
+                  }
+                >
+                  <div className="p-4 bg-red-500/10 rounded-2xl">
+                    <FileText className="w-12 h-12 text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm" style={{ color: isLightMode ? '#0F172A' : '#FFFFFF' }}>
+                      {note.fileName || note.title}
+                    </h4>
+                    <p className="text-xs mt-1.5 max-w-xs mx-auto leading-relaxed" style={{ color: isLightMode ? '#64748B' : '#94A3B8' }}>
+                      PDF tidak dapat dimuat langsung di browser mobile. Klik tombol di bawah untuk mengunduh atau membukanya di aplikasi pembaca PDF Anda.
+                    </p>
+                  </div>
+                  <a
+                    href={pdfUrl}
+                    download={note.fileName || `${note.title}.pdf`}
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs font-bold shadow-lg hover:opacity-90 active:scale-95 transition flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Buka / Unduh PDF</span>
+                  </a>
+                </div>
+
+                {note.content && (
+                  <div className="max-w-3xl mx-auto w-full pb-8">
+                    <h5 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: isLightMode ? '#64748B' : '#94A3B8' }}>
+                      Teks yang Diekstrak:
+                    </h5>
+                    <div className="prose prose-invert max-w-none text-sm leading-relaxed" style={{ color: isLightMode ? '#334155' : '#CBD5E1' }}>
+                      {renderMarkdownAndKatex(note.content)}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Desktop PDF View: Show iframe
+              <iframe
+                src={pdfUrl}
+                className="w-full h-full border-0"
+                title={`Preview: ${note.title}`}
+              />
+            )
           ) : hasDataUrl && isImage ? (
+
 
             // Image Viewer
             <div className="h-full overflow-auto flex items-center justify-center p-6 bg-slate-950">
