@@ -94,6 +94,8 @@ export function DocumentViewer() {
     deleteDocument,
     restoreDocumentsFromStorage
   } = useDocumentStore();
+  const isLightMode = useUIStore((s) => s.isLightMode);
+  const LM = isLightMode;
 
   // States
   const [zoom, setZoom] = useState(100);
@@ -476,8 +478,8 @@ export function DocumentViewer() {
 
   return (
     <div ref={mainLayoutRef} className={`w-full flex overflow-hidden h-[calc(100vh-124px)] md:h-screen relative ${isFullscreen ? 'fixed inset-0 z-50 h-screen' : ''}`}>
-      {/* ── Background gradient ── */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 -z-10 pointer-events-none" />
+      {/* ── Background ── */}
+      <div className="absolute inset-0 -z-10 pointer-events-none" style={LM ? { background: '#F5F7FF' } : { background: 'linear-gradient(135deg, #020617 0%, #0f172a 50%, #020617 100%)' }} />
 
       {/* ── LEFT SIDEBAR: Document History ── */}
       <AnimatePresence initial={false}>
@@ -487,24 +489,28 @@ export function DocumentViewer() {
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-            className="hidden md:flex flex-col bg-slate-900/60 border-r border-slate-800/80 backdrop-blur-md overflow-hidden shrink-0"
+            className="hidden md:flex flex-col overflow-hidden shrink-0"
+            style={LM
+              ? { background: '#FFFFFF', borderRight: '1px solid #E4E8F0' }
+              : { background: 'rgba(9,9,11,0.6)', backdropFilter: 'blur(12px)', borderRight: '1px solid #1e293b' }
+            }
           >
             {/* Sidebar header */}
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div className="p-5 flex items-center justify-between" style={{ borderBottom: LM ? '1px solid #E4E8F0' : '1px solid #1e293b' }}>
               <div className="flex items-center gap-2">
-                <FolderOpen className="w-5 h-5 text-violet-400" />
-                <span className="font-bold text-white text-sm">Dokumen Tersimpan</span>
+                <FolderOpen className="w-5 h-5" style={{ color: '#5B50F0' }} />
+                <span className="font-bold text-sm" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>Dokumen Tersimpan</span>
               </div>
-              <span className="text-[10px] font-semibold bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={LM ? { background: '#EEF0FF', color: '#5B50F0', border: '1px solid #C7D2FE' } : { background: '#1e293b', color: '#94A3B8', border: '1px solid #334155' }}>
                 {documents.length} File
               </span>
             </div>
 
             {/* Quick stats banner */}
             {documents.length > 0 && (
-              <div className="mx-4 mt-4 p-3 bg-gradient-to-r from-violet-950/20 to-blue-950/20 rounded-xl border border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
-                <span className="flex items-center gap-1.5"><Layers className="w-3.5 h-3.5 text-violet-400" /> Total Data:</span>
-                <span className="font-bold text-slate-300">{totalUploadedSize}</span>
+              <div className="mx-4 mt-4 p-3 rounded-xl flex items-center justify-between text-xs" style={LM ? { background: '#EEF0FF', border: '1px solid #C7D2FE', color: '#64748B' } : { background: 'rgba(91,80,240,0.1)', border: '1px solid rgba(91,80,240,0.2)', color: '#94A3B8' }}>
+                <span className="flex items-center gap-1.5"><Layers className="w-3.5 h-3.5" style={{ color: '#5B50F0' }} /> Total Data:</span>
+                <span className="font-bold" style={{ color: LM ? '#0F172A' : '#CBD5E1' }}>{totalUploadedSize}</span>
               </div>
             )}
 
@@ -512,12 +518,12 @@ export function DocumentViewer() {
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
               {documents.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-500">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={LM ? { background: '#EEF0FF', color: '#5B50F0' } : { background: 'rgba(30,41,59,0.5)', color: '#64748B' }}>
                     <BookOpen className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-300">Belum Ada Dokumen</p>
-                    <p className="text-xs text-slate-500">Unggah berkas Word Anda untuk memulai analisis dan preview.</p>
+                    <p className="text-sm font-semibold" style={{ color: LM ? '#0F172A' : '#CBD5E1' }}>Belum Ada Dokumen</p>
+                    <p className="text-xs" style={{ color: '#94A3B8' }}>Unggah berkas Word Anda untuk memulai analisis dan preview.</p>
                   </div>
                 </div>
               ) : (
@@ -530,11 +536,11 @@ export function DocumentViewer() {
                       key={doc.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`relative group rounded-xl p-3 cursor-pointer transition-all duration-300 flex items-center gap-3 border ${
-                        isActive
-                          ? 'bg-gradient-to-r from-violet-600/15 to-blue-600/10 border-violet-500/80 shadow-md shadow-violet-500/5 text-white'
-                          : 'bg-slate-800/20 border-slate-800/60 hover:bg-slate-800/40 hover:border-slate-700/60 text-slate-300'
-                      }`}
+                      className="relative group rounded-xl p-3 cursor-pointer transition-all duration-300 flex items-center gap-3 border"
+                      style={isActive
+                        ? LM ? { background: '#EEF0FF', borderColor: '#C7D2FE', color: '#0F172A' } : { background: 'rgba(91,80,240,0.12)', borderColor: 'rgba(91,80,240,0.4)', color: '#FFFFFF' }
+                        : LM ? { background: 'transparent', borderColor: '#F1F5F9', color: '#475569' } : { background: 'rgba(30,41,59,0.2)', borderColor: 'rgba(30,41,59,0.6)', color: '#CBD5E1' }
+                      }
                       onClick={() => {
                         setActiveDocumentId(doc.id);
                         setIsUploadingNew(false);
@@ -549,11 +555,11 @@ export function DocumentViewer() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold truncate pr-6 group-hover:text-white transition-colors duration-200">
+                        <p className="text-xs font-bold truncate pr-6 transition-colors duration-200" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>
                           {doc.fileName}
                         </p>
-                        <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-500">
-                          <span className="font-medium text-slate-400">{formatBytes(doc.fileSize)}</span>
+                        <div className="flex items-center gap-2 mt-1 text-[10px]" style={{ color: '#94A3B8' }}>
+                          <span className="font-medium">{formatBytes(doc.fileSize)}</span>
                           <span>•</span>
                           <span className="flex items-center gap-1"><Calendar className="w-2.5 h-2.5" /> {new Date(doc.uploadedAt).toLocaleDateString('id-ID')}</span>
                         </div>
@@ -578,13 +584,19 @@ export function DocumentViewer() {
             </div>
 
             {/* Upload item sidebar button */}
-            <div className="p-4 border-t border-slate-800 bg-slate-950/40">
+            <div className="p-4" style={{ borderTop: LM ? '1px solid #E4E8F0' : '1px solid #1e293b', background: LM ? '#F8FAFC' : 'rgba(9,9,11,0.4)' }}>
               <button
                 type="button"
                 onClick={() => setIsUploadingNew(true)}
-                className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-2 border border-slate-700/60 shadow-lg transition-all"
+                className="w-full py-2.5 px-4 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+                style={LM
+                  ? { background: '#5B50F0', color: '#FFFFFF', border: 'none' }
+                  : { background: '#1e293b', color: '#FFFFFF', border: '1px solid #334155' }
+                }
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = LM ? '#4A40E0' : '#334155'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = LM ? '#5B50F0' : '#1e293b'; }}
               >
-                <Plus className="w-4 h-4 text-violet-400" />
+                <Plus className="w-4 h-4" style={{ color: LM ? '#FFFFFF' : '#A78BFA' }} />
                 Unggah Berkas Baru
               </button>
             </div>
@@ -611,7 +623,8 @@ export function DocumentViewer() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="md:hidden fixed inset-y-0 left-0 w-[300px] bg-slate-950 border-r border-slate-800 flex flex-col z-50 h-full shadow-2xl"
+              className="md:hidden fixed inset-y-0 left-0 w-[300px] flex flex-col z-50 h-full shadow-2xl"
+              style={LM ? { background: '#FFFFFF', borderRight: '1px solid #E4E8F0' } : { background: '#020617', borderRight: '1px solid #1e293b' }}
             >
               {/* Drawer header */}
               <div className="p-4 border-b border-slate-850 flex items-center justify-between">
@@ -728,7 +741,8 @@ export function DocumentViewer() {
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
-              className="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 backdrop-blur-md"
+              className="p-4 flex flex-wrap items-center justify-between gap-4"
+              style={LM ? { background: '#FFFFFF', borderBottom: '1px solid #E4E8F0' } : { background: 'rgba(2,6,23,0.8)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #1e293b' }}
             >
               {/* Back button (Mobile only) */}
               <div className="flex items-center gap-3">
@@ -834,7 +848,11 @@ export function DocumentViewer() {
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="p-2.5 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-xl transition hover:bg-slate-800"
+                  className="p-2.5 rounded-xl transition"
+                  style={LM
+                    ? { background: '#F1F5F9', border: '1px solid #E4E8F0', color: '#64748B' }
+                    : { background: '#0f172a', border: '1px solid #1e293b', color: '#94A3B8' }
+                  }
                   title={isFullscreen ? 'Keluar Fullscreen' : 'Fullscreen'}
                 >
                   {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -844,7 +862,10 @@ export function DocumentViewer() {
                 <a
                   href={activeDoc.fileUrl}
                   download={activeDoc.fileName}
-                  className="px-4 py-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-violet-600/10 flex items-center gap-2 transition"
+                  className="px-4 py-2 text-white font-bold text-xs rounded-xl shadow-lg flex items-center gap-2 transition"
+                  style={{ background: '#5B50F0', boxShadow: '0 4px 14px rgba(91,80,240,0.3)' }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = '#4A40E0')}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = '#5B50F0')}
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Unduh Berkas</span>
@@ -878,10 +899,10 @@ export function DocumentViewer() {
                         </button>
                       )}
                       <div>
-                        <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
+                        <h2 className="text-xl sm:text-2xl font-bold" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>
                           Unggah Dokumen Word
                         </h2>
-                        <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                        <p className="text-xs sm:text-sm mt-1" style={{ color: '#94A3B8' }}>
                           Unggah berkas Microsoft Word untuk ditampilkan secara instan dengan layout premium aslinya.
                         </p>
                       </div>
@@ -904,12 +925,15 @@ export function DocumentViewer() {
 
                   <DocumentUpload />
                   
-                  {/* Custom tip */}
-                  <div className="p-4 bg-violet-950/15 border border-violet-900/30 rounded-2xl flex gap-3 text-xs text-violet-300">
-                    <Sparkles className="w-5 h-5 shrink-0 text-violet-400" />
+                  {/* Tip box — hidden if DocumentUpload already shows privacy notice */}
+                  <div className="p-4 rounded-2xl flex gap-3 text-xs" style={LM
+                    ? { background: '#EEF0FF', border: '1px solid #C7D2FE', color: '#5B50F0' }
+                    : { background: 'rgba(91,80,240,0.1)', border: '1px solid rgba(91,80,240,0.25)', color: '#C4B5FD' }
+                  }>
+                    <Sparkles className="w-5 h-5 shrink-0" style={{ color: '#5B50F0' }} />
                     <div>
-                      <strong className="block font-bold mb-0.5 text-white">Privasi Terjamin Penuh</strong>
-                      Semua pemrosesan, visualisasi, dan ekstraksi teks dilakukan secara lokal 100% di browser Anda. Tidak ada data berkas yang dikirim ke server luar.
+                      <strong className="block font-bold mb-0.5" style={{ color: LM ? '#0F172A' : '#FFFFFF' }}>Tips</strong>
+                      Setelah berkas dimuat, gunakan fitur Zoom dan Pencarian Teks di toolbar atas untuk pengalaman membaca terbaik.
                     </div>
                   </div>
                 </div>
@@ -927,7 +951,8 @@ export function DocumentViewer() {
                 <div 
                   ref={scrollContainerRef}
                   onScroll={handleScroll}
-                  className="flex-1 overflow-auto bg-slate-950/60 p-4 sm:p-8 flex justify-center scroll-smooth relative"
+                  className="flex-1 overflow-auto p-4 sm:p-8 flex justify-center scroll-smooth relative"
+                  style={LM ? { background: '#F0F2F8' } : { background: 'rgba(2,6,23,0.6)' }}
                 >
                   {/* Mock Skeletons/Spinner while rendering */}
                   {isRenderLoading && (
@@ -998,11 +1023,17 @@ export function DocumentViewer() {
                 </div>
 
                 {/* Fixed floating page/scroll navigator inside viewer */}
-                <div className="absolute bottom-6 right-6 bg-slate-900/90 border border-slate-800 backdrop-blur-md rounded-2xl px-4 py-2 text-xs font-bold text-slate-300 shadow-xl flex items-center gap-3 z-20">
-                  <span className="text-slate-400">Halaman</span>
-                  <span className="text-violet-400 bg-slate-800 px-2 py-0.5 rounded">{currentPage}</span>
-                  <span className="text-slate-600">/</span>
-                  <span className="text-slate-400">{totalPages}</span>
+                <div
+                  className="absolute bottom-6 right-6 backdrop-blur-md rounded-2xl px-4 py-2 text-xs font-bold shadow-xl flex items-center gap-3 z-20"
+                  style={LM
+                    ? { background: 'rgba(255,255,255,0.95)', border: '1px solid #E4E8F0', color: '#64748B' }
+                    : { background: 'rgba(15,23,42,0.9)', border: '1px solid #1e293b', color: '#94A3B8' }
+                  }
+                >
+                  <span>Halaman</span>
+                  <span className="px-2 py-0.5 rounded" style={LM ? { background: '#EEF0FF', color: '#5B50F0' } : { background: '#1e293b', color: '#A78BFA' }}>{currentPage}</span>
+                  <span style={{ color: LM ? '#CBD5E1' : '#334155' }}>/</span>
+                  <span>{totalPages}</span>
                 </div>
               </motion.div>
             )}

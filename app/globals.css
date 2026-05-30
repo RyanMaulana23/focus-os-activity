@@ -24,19 +24,14 @@ html {
 body {
   background: transparent;
   color: var(--foreground);
-  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  font-family: var(--font-geist-sans, 'Inter', Arial, Helvetica, sans-serif);
   overflow-x: hidden;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    ANIMATED BACKGROUND
-   Three layered effects:
-   1. Aurora — slow-moving gradient mesh
-   2. Orbs — floating glowing blobs
-   3. Grid — subtle dot pattern overlay
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-/* Layer 0: base dark canvas */
 .animated-bg {
   position: fixed;
   inset: 0;
@@ -45,7 +40,6 @@ body {
   overflow: hidden;
 }
 
-/* Layer 1: aurora gradient */
 .animated-bg::before {
   content: '';
   position: absolute;
@@ -66,7 +60,6 @@ body {
   100% { transform: translate(-2%,   2%) rotate(-2deg)  scale(1);    }
 }
 
-/* Layer 2: floating orbs */
 .animated-bg::after {
   content: '';
   position: absolute;
@@ -89,7 +82,6 @@ body {
   100% { transform: translate(0px,   0px) scale(1);    opacity: 0.8; }
 }
 
-/* Layer 3: dot grid overlay */
 .bg-grid {
   position: fixed;
   inset: 0;
@@ -100,7 +92,6 @@ body {
   pointer-events: none;
 }
 
-/* Subtle vignette on edges */
 .bg-vignette {
   position: fixed;
   inset: 0;
@@ -113,35 +104,21 @@ body {
    SIDEBAR ANIMATIONS
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-/* Sidebar slide-in from left on mount */
 @keyframes sidebarSlideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
 }
 
 .sidebar-enter {
   animation: sidebarSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Staggered nav item entry */
 @keyframes navItemFadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0);     }
 }
 
-.nav-item-1  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.1s; opacity: 0; }
+.nav-item-1  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.1s;  opacity: 0; }
 .nav-item-2  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.16s; opacity: 0; }
 .nav-item-3  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.22s; opacity: 0; }
 .nav-item-4  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.28s; opacity: 0; }
@@ -149,17 +126,13 @@ body {
 .nav-item-6  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.40s; opacity: 0; }
 .nav-item-7  { animation: navItemFadeIn 0.4s ease forwards; animation-delay: 0.46s; opacity: 0; }
 
-/* Logo pulse glow */
 @keyframes logoPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);   }
   50%       { box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.35); }
 }
 
-.logo-glow {
-  animation: logoPulse 3s ease-in-out infinite;
-}
+.logo-glow { animation: logoPulse 3s ease-in-out infinite; }
 
-/* Active nav item shimmer sweep */
 @keyframes shimmerSweep {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
@@ -177,17 +150,13 @@ body {
   animation: shimmerSweep 4s linear infinite;
 }
 
-/* Sidebar active glow ring */
 @keyframes activeGlow {
   0%, 100% { box-shadow: 0 0 8px 1px rgba(139, 92, 246, 0.3); }
   50%       { box-shadow: 0 0 18px 3px rgba(139, 92, 246, 0.55); }
 }
 
-.nav-active-glow {
-  animation: activeGlow 2.5s ease-in-out infinite;
-}
+.nav-active-glow { animation: activeGlow 2.5s ease-in-out infinite; }
 
-/* Icon spin on hover (used in label text) */
 @keyframes iconBounce {
   0%, 100% { transform: translateY(0);  }
   50%       { transform: translateY(-2px); }
@@ -204,7 +173,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   SMOOTH TRANSITIONS (non-layout props only to avoid jank)
+   SMOOTH TRANSITIONS
    ═══════════════════════════════════════════════════════════════════════════════ */
 * {
   transition:
@@ -255,7 +224,6 @@ nav button, aside button {
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ── Section transition (fires when key changes in React) ──────────────────── */
 @keyframes sectionEnter {
   from {
     opacity: 0;
@@ -274,23 +242,36 @@ nav button, aside button {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   PREMIUM LIGHT MODE — ONLY STYLES STRUCTURAL BACKGROUNDS & FRAMEWORK
+   ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗
+   ██║     ██║██╔════╝ ██║  ██║╚══██╔══╝    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝
+   ██║     ██║██║  ███╗███████║   ██║       ██╔████╔██║██║   ██║██║  ██║█████╗
+   ██║     ██║██║   ██║██╔══██║   ██║       ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝
+   ███████╗██║╚██████╔╝██║  ██║   ██║       ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗
+   ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
    ═══════════════════════════════════════════════════════════════════════════════ */
 
+/* ─────────────────────────── DESIGN TOKENS ─────────────────────────────────── */
+/* Page bg:       #F5F7FF   |  Card surface:  #FFFFFF   |  Border: #E4E8F0      */
+/* Primary:       #5B50F0   |  Hover:         #4A40E0   |  Success: #059669     */
+/* Warning:       #D97706   |  Danger:        #E11D48   |  Sessions: #7C3AED   */
+/* Heading text:  #0F172A   |  Body:          #475569   |  Muted: #94A3B8      */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* ══════════════════════ BASE STRUCTURE ══════════════════════════════════════ */
 .light-mode {
-  --background: #F8FAFC;
+  --background: #F5F7FF;
   --foreground: #0F172A;
 }
 
 .light-mode html,
 .light-mode body {
-  background-color: #F8FAFC !important;
+  background-color: #F5F7FF !important;
   color: #0F172A !important;
 }
 
-/* Clear floating orbs and set crisp light background */
+/* Page background — soft blue-tinted white */
 .light-mode .animated-bg {
-  background: #F8FAFC !important;
+  background: #F5F7FF !important;
 }
 
 .light-mode .animated-bg::before,
@@ -300,111 +281,1288 @@ nav button, aside button {
 
 .light-mode .bg-grid {
   background-image:
-    radial-gradient(circle, rgba(148, 163, 184, 0.05) 1px, transparent 1px) !important;
+    radial-gradient(circle, rgba(91, 80, 240, 0.04) 1px, transparent 1px) !important;
 }
 
 .light-mode .bg-vignette {
   display: none !important;
 }
 
-/* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
+/* ══════════════════════ SIDEBAR ════════════════════════════════════════════ */
 .light-mode aside {
-  background-color: rgba(255, 255, 255, 0.98) !important;
-  border-right-color: #E2E8F0 !important;
-  box-shadow: 2px 0 16px rgba(15, 23, 42, 0.04) !important;
+  background-color: #FFFFFF !important;
+  border-right-color: #E4E8F0 !important;
+  box-shadow: 1px 0 0 0 #E4E8F0 !important;
 }
 
-.light-mode aside .backdrop-blur-xl {
-  backdrop-filter: blur(20px) saturate(1.2) !important;
+/* Logo area border */
+.light-mode aside > div:first-child {
+  border-bottom-color: #E4E8F0 !important;
 }
 
-/* ── BORDERS — structural borders only ──────────────────────────────────────── */
+/* All nav buttons — inactive state */
 .light-mode aside nav button {
-  color: #5c5c7d !important;
+  color: #64748B !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  animation: none !important;
 }
 
+/* Inactive nav icon */
+.light-mode aside nav button svg {
+  color: #94A3B8 !important;
+}
+
+/* Hover state */
 .light-mode aside nav button:hover {
-  background-color: #f3f1fa !important;
-  color: #2d1b69 !important;
+  background-color: #F1F3FF !important;
+  color: #3730A3 !important;
 }
 
-/* Keep active nav shimmer text white */
-.light-mode aside nav button.text-white,
-.light-mode .nav-active-shimmer + span,
-.light-mode .nav-active-shimmer ~ span {
-  color: #ffffff !important;
+.light-mode aside nav button:hover svg {
+  color: #3730A3 !important;
 }
 
-/* Active nav items — keep white text on the gradient shimmer */
-.light-mode .nav-active-glow {
-  color: #ffffff !important;
+/* Active nav item */
+.light-mode aside nav button.nav-active-glow,
+.light-mode aside nav button[class*="nav-active-glow"] {
+  background-color: #EEF0FF !important;
+  color: #5B50F0 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  border-left: 3px solid #5B50F0 !important;
 }
 
-.light-mode .nav-active-glow .text-white,
-.light-mode .nav-active-glow span {
-  color: #ffffff !important;
+.light-mode aside nav button.nav-active-glow svg,
+.light-mode aside nav button[class*="nav-active-glow"] svg {
+  color: #5B50F0 !important;
 }
 
-/* Sidebar tooltips */
-.light-mode aside .bg-slate-800 {
-  background-color: #2d1b69 !important;
-  border-color: #4338ca !important;
-  color: #ffffff !important;
+/* Active nav item — hide shimmer overlay */
+.light-mode aside nav button .nav-active-shimmer,
+.light-mode .nav-active-shimmer {
+  display: none !important;
 }
 
-.light-mode aside .border-r-slate-800 {
-  border-right-color: #2d1b69 !important;
+/* Tooltip */
+.light-mode aside nav button > div {
+  background-color: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Tooltip arrow */
+.light-mode aside nav button > div span {
+  border-right-color: #FFFFFF !important;
+}
+
+/* Sidebar bottom border */
+.light-mode aside > div:last-child {
+  border-top-color: #E4E8F0 !important;
+}
+
+/* Sidebar user profile names */
+.light-mode aside p {
+  color: #0F172A !important;
+}
+
+.light-mode aside p.text-xs,
+.light-mode aside p[class*="text-xs"],
+.light-mode aside p[class*="text-\[10px\]"] {
+  color: #475569 !important;
 }
 
 /* Sidebar profile avatar border */
-.light-mode .border-violet-500\/40 {
-  border-color: #a78bfa !important;
+.light-mode aside .border-violet-500\/40 {
+  border-color: #C7D2FE !important;
 }
 
-/* ── HEADER BAR ────────────────────────────────────────────────────────────── */
-.light-mode .bg-gradient-to-b.from-slate-900\/95.to-slate-900\/50 {
-  background-image: none !important;
+/* Sidebar profile avatar text (initials) */
+.light-mode aside .bg-slate-800 {
+  background-color: #EEF0FF !important;
+  color: #5B50F0 !important;
+}
+
+/* Mobile drawer overlay */
+.light-mode .bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.35) !important;
+}
+
+/* Mobile drawer */
+.light-mode aside.fixed.left-0.top-0.h-screen.w-72 {
+  background-color: #FFFFFF !important;
+  border-right-color: #E4E8F0 !important;
+  box-shadow: 4px 0 16px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Mobile drawer header border */
+.light-mode aside .border-b {
+  border-bottom-color: #E4E8F0 !important;
+}
+
+/* Mobile close button */
+.light-mode aside button.text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+.light-mode aside button.text-slate-400:hover {
+  color: #0F172A !important;
+  background-color: #F1F5F9 !important;
+}
+
+/* Mobile sidebar headings */
+.light-mode aside h1 {
+  color: #0F172A !important;
+}
+
+/* Mobile sidebar text */
+.light-mode aside .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+/* Mobile logout button */
+.light-mode aside button.border-red-500\/20 {
+  background-color: #FFF1F2 !important;
+  border-color: #FECDD3 !important;
+  color: #E11D48 !important;
+}
+
+.light-mode aside button.border-red-500\/20:hover {
+  background-color: #E11D48 !important;
+  color: #FFFFFF !important;
+}
+
+/* ══════════════════════ HEADER / TOP BAR ════════════════════════════════════ */
+.light-mode header,
+.light-mode .sticky.top-0.z-30 {
   background-color: rgba(255, 255, 255, 0.92) !important;
-  border-bottom-color: #E2E8F0 !important;
-  box-shadow: 0 1px 3px rgba(129, 99, 255, 0.06) !important;
+  background-image: none !important;
+  border-bottom-color: #E4E8F0 !important;
+  box-shadow: 0 1px 0 0 #E4E8F0 !important;
+  backdrop-filter: blur(16px) saturate(1.2) !important;
 }
 
-/* ── SCROLLBAR ─────────────────────────────────────────────────────────────── */
+/* Dashboard header title */
+.light-mode header h1,
+.light-mode header .bg-clip-text {
+  background-image: none !important;
+  color: #0F172A !important;
+  -webkit-text-fill-color: #0F172A !important;
+}
+
+/* Dashboard header subtitle */
+.light-mode header p {
+  color: #475569 !important;
+}
+
+/* Section titles in content area */
+.light-mode h2.text-white,
+.light-mode .text-white:not(button):not(span):not(aside *) {
+  color: #0F172A !important;
+}
+
+.light-mode .text-slate-400:not(aside *):not(nav *) {
+  color: #94A3B8 !important;
+}
+
+/* Mobile top bar */
+.light-mode .md\:hidden.sticky.top-0 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom-color: #E4E8F0 !important;
+}
+
+/* Mobile top bar title */
+.light-mode .md\:hidden.sticky.top-0 h1,
+.light-mode .md\:hidden.sticky.top-0 span {
+  color: #0F172A !important;
+}
+
+/* ══════════════════════ USER PROFILE CHIP IN HEADER ════════════════════════ */
+.light-mode .bg-white.border-slate-200 {
+  background-color: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* ══════════════════════ CONTENT AREA ════════════════════════════════════════ */
+/* All gradient card backgrounds → white */
+.light-mode .bg-gradient-to-br,
+.light-mode [class*="from-slate-800"],
+.light-mode [class*="from-slate-900"],
+.light-mode [class*="to-slate-900"],
+.light-mode [class*="to-slate-800"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Card universal style */
+.light-mode .rounded-xl,
+.light-mode .rounded-\[20px\],
+.light-mode .rounded-\[24px\] {
+  --card-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+}
+
+/* ══════════════════════ TEXT OVERRIDES ══════════════════════════════════════ */
+.light-mode .text-white {
+  color: #0F172A !important;
+}
+
+.light-mode .text-slate-200,
+.light-mode .text-slate-300 {
+  color: #475569 !important;
+}
+
+.light-mode .text-slate-400,
+.light-mode .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+/* Exception: active nav items should keep their indigo color (set above) */
+.light-mode aside nav button.nav-active-glow .text-white,
+.light-mode aside nav button.nav-active-glow span {
+  color: #5B50F0 !important;
+}
+
+/* ══════════════════════ FORM INPUTS ══════════════════════════════════════════ */
+.light-mode input[type="text"],
+.light-mode input[type="email"],
+.light-mode input[type="password"],
+.light-mode select,
+.light-mode textarea {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #94A3B8 !important;
+  opacity: 1 !important;
+}
+
+.light-mode input:focus,
+.light-mode select:focus,
+.light-mode textarea:focus {
+  border-color: #5B50F0 !important;
+  box-shadow: 0 0 0 3px rgba(91, 80, 240, 0.12) !important;
+  outline: none !important;
+}
+
+/* Select option dropdown items */
+.light-mode select option {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+/* ══════════════════════ BUTTONS ══════════════════════════════════════════════ */
+/* Primary indigo button */
+.light-mode .bg-\[\#2563EB\] {
+  background-color: #5B50F0 !important;
+}
+
+.light-mode .hover\:bg-\[\#1D4ED8\]:hover {
+  background-color: #4A40E0 !important;
+}
+
+/* Green Add habit button → indigo */
+.light-mode .from-green-600,
+.light-mode .to-emerald-600,
+.light-mode .from-green-700,
+.light-mode .to-emerald-700 {
+  --tw-gradient-from: #5B50F0 !important;
+  --tw-gradient-to: #4A40E0 !important;
+}
+
+/* Reset / secondary buttons */
+.light-mode .bg-slate-700\/60,
+.light-mode [class*="bg-slate-7"] {
+  background-color: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+  color: #64748B !important;
+}
+
+/* ══════════════════════ TASK ITEMS ══════════════════════════════════════════ */
+/* Pending task row */
+.light-mode .bg-slate-700\/30 {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .hover\:bg-slate-700\/50:hover {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* Completed task row */
+.light-mode .bg-green-950\/10 {
+  background-color: #F0FDF4 !important;
+  border-color: #BBF7D0 !important;
+}
+
+/* Checkbox — pending: slate border, done: indigo fill */
+.light-mode .border-slate-500 {
+  border-color: #CBD5E1 !important;
+}
+
+.light-mode .border-green-500.bg-green-500 {
+  border-color: #5B50F0 !important;
+  background-color: #5B50F0 !important;
+}
+
+/* Task title */
+.light-mode .font-medium.text-white {
+  color: #0F172A !important;
+}
+
+/* Completed task title */
+.light-mode .text-slate-500.line-through {
+  color: #94A3B8 !important;
+}
+
+/* Priority badges */
+.light-mode .bg-red-950\/40 {
+  background-color: #FFF1F2 !important;
+  border-color: #FECDD3 !important;
+}
+
+.light-mode .text-red-400 {
+  color: #E11D48 !important;
+}
+
+.light-mode .bg-yellow-950\/40 {
+  background-color: #FFFBEB !important;
+  border-color: #FDE68A !important;
+}
+
+.light-mode .text-yellow-400 {
+  color: #D97706 !important;
+}
+
+.light-mode .bg-green-950\/40 {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+}
+
+.light-mode .text-green-400 {
+  color: #059669 !important;
+}
+
+/* Label tags (blue) */
+.light-mode .bg-blue-900\/30 {
+  background-color: #EEF2FF !important;
+  border-color: #C7D2FE !important;
+}
+
+.light-mode .text-blue-300 {
+  color: #4338CA !important;
+}
+
+/* Completed count badge (green pill) */
+.light-mode .bg-green-950\/40.text-green-300 {
+  background-color: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #A7F3D0 !important;
+}
+
+.light-mode .text-green-300 {
+  color: #059669 !important;
+}
+
+/* Delete trash button */
+.light-mode .hover\:bg-red-950\/40:hover {
+  background-color: #FFF1F2 !important;
+}
+
+/* ══════════════════════ HABIT TRACKER ═══════════════════════════════════════ */
+/* Habit card rows */
+.light-mode .bg-slate-700\/30.rounded-lg {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Day dot — completed */
+.light-mode .from-green-500.to-emerald-500 {
+  background: #5B50F0 !important;
+  background-image: none !important;
+  box-shadow: 0 2px 8px rgba(91, 80, 240, 0.25) !important;
+}
+
+/* Day dot — empty */
+.light-mode .bg-slate-600 {
+  background-color: #EEF0FF !important;
+  color: #94A3B8 !important;
+}
+
+.light-mode .bg-slate-600:hover {
+  background-color: #DBEAFE !important;
+}
+
+/* Streak badge */
+.light-mode .bg-orange-900\/30 {
+  background-color: #FFF7ED !important;
+  border-color: #FDE68A !important;
+}
+
+.light-mode .text-orange-400 {
+  color: #D97706 !important;
+}
+
+.light-mode .text-orange-300 {
+  color: #D97706 !important;
+}
+
+/* Progress bar track */
+.light-mode .h-1\.5.bg-slate-700 {
+  background-color: #E4E8F0 !important;
+}
+
+/* Progress bar fill */
+.light-mode .from-green-500.to-emerald-500.h-full {
+  background: #5B50F0 !important;
+  background-image: none !important;
+}
+
+/* Week count text */
+.light-mode .text-slate-300.whitespace-nowrap {
+  color: #475569 !important;
+}
+
+/* ══════════════════════ POMODORO TIMER ══════════════════════════════════════ */
+/* Timer circle track */
+.light-mode circle[stroke="#334155"] {
+  stroke: #EEF0FF !important;
+}
+
+/* Timer circle progress */
+.light-mode circle[stroke="#2563EB"] {
+  stroke: #5B50F0 !important;
+}
+
+/* Timer text */
+.light-mode .text-\[32px\].font-bold {
+  color: #0F172A !important;
+}
+
+.light-mode .text-\[13px\].font-medium.text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+/* Start button (when not running) — indigo instead of blue gradient */
+.light-mode .from-\[\#2563EB\] {
+  background: #5B50F0 !important;
+  background-image: none !important;
+}
+
+.light-mode .from-\[\#2563EB\]:hover {
+  background: #4A40E0 !important;
+}
+
+/* Reset button */
+.light-mode .bg-slate-700\/60.rounded-\[14px\] {
+  background-color: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+  color: #64748B !important;
+}
+
+/* Duration segment control container */
+.light-mode .bg-slate-900\/40 {
+  background-color: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Duration pills — inactive */
+.light-mode .text-slate-400.hover\:bg-slate-800\/50 {
+  color: #64748B !important;
+}
+
+.light-mode .text-slate-400.hover\:bg-slate-800\/50:hover {
+  background-color: #EEF0FF !important;
+  color: #5B50F0 !important;
+}
+
+/* Duration pills — active */
+.light-mode .bg-\[\#2563EB\].text-white.shadow-sm {
+  background-color: #5B50F0 !important;
+}
+
+/* ══════════════════════ QUICK STATS (Dashboard) ══════════════════════════════ */
+/* Stats card containers — override all gradient bg */
+.light-mode .grid > div[class*="rounded-xl"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Stats card icon box gradient → solid accent */
+.light-mode .w-10.h-10.rounded-lg {
+  background-image: none !important;
+}
+
+/* Stats label text */
+.light-mode .text-xs.font-semibold.text-slate-300.uppercase {
+  color: #94A3B8 !important;
+}
+
+/* Stats value */
+.light-mode .text-2xl.font-bold.text-white,
+.light-mode .text-3xl.font-bold.text-white {
+  color: #0F172A !important;
+}
+
+/* ══════════════════════ SETTINGS EMPTY STATE ════════════════════════════════ */
+.light-mode .bg-gradient-to-br.from-slate-800\/50.to-slate-900\/50 {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .text-slate-400.text-lg {
+  color: #94A3B8 !important;
+}
+
+/* ══════════════════════ SCROLLBAR ═══════════════════════════════════════════ */
 .light-mode ::-webkit-scrollbar-track {
   background: transparent !important;
 }
 
 .light-mode ::-webkit-scrollbar-thumb {
-  background: rgba(129, 99, 255, 0.18) !important;
+  background: rgba(91, 80, 240, 0.15) !important;
   border-radius: 3px !important;
 }
 
 .light-mode ::-webkit-scrollbar-thumb:hover {
-  background: rgba(129, 99, 255, 0.35) !important;
+  background: rgba(91, 80, 240, 0.30) !important;
 }
 
-/* ── BOTTOM NAV (MOBILE) ───────────────────────────────────────────────────── */
+/* ══════════════════════ BOTTOM NAV (MOBILE) ══════════════════════════════════ */
 .light-mode nav.fixed.bottom-0 {
   background-color: rgba(255, 255, 255, 0.95) !important;
-  border-top-color: #E2E8F0 !important;
-  box-shadow: 0 -2px 12px rgba(129, 99, 255, 0.06) !important;
+  border-top-color: #E4E8F0 !important;
+  box-shadow: 0 -1px 0 0 #E4E8F0, 0 -4px 16px rgba(15, 23, 42, 0.04) !important;
 }
 
-/* ── BACKDROP BLUR containers ──────────────────────────────────────────────── */
+/* Bottom nav inactive */
+.light-mode nav.fixed.bottom-0 button {
+  color: #94A3B8 !important;
+}
+
+/* Bottom nav active pill */
+.light-mode nav.fixed.bottom-0 button [class*="from-violet"],
+.light-mode nav.fixed.bottom-0 button [class*="from-indigo"] {
+  background: #EEF0FF !important;
+  background-image: none !important;
+}
+
+.light-mode nav.fixed.bottom-0 button.text-white {
+  color: #5B50F0 !important;
+}
+
+/* ══════════════════════ LOGO GLOW — LIGHT ═══════════════════════════════════ */
+.light-mode .logo-glow {
+  animation: logoPulseLight 3s ease-in-out infinite !important;
+}
+
+@keyframes logoPulseLight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91, 80, 240, 0); }
+  50% { box-shadow: 0 0 16px 3px rgba(91, 80, 240, 0.18); }
+}
+
+/* ══════════════════════ BACKDROP BLUR ═══════════════════════════════════════ */
 .light-mode .backdrop-blur-md,
 .light-mode .backdrop-blur-xl {
   backdrop-filter: blur(16px) saturate(1.2) !important;
 }
 
-/* ── LOGO GLOW ────────────────────────────────────────────────────────────── */
-.light-mode .logo-glow {
-  box-shadow: 0 0 0 0 rgba(129, 99, 255, 0) !important;
-  animation: logoPulseLight 3s ease-in-out infinite !important;
+/* ═══════════════════════════════════════════════════════════════════════════════
+   NOTES SECTION — LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── NotesUpload card ──────────────────────────────────────────────────────── */
+.light-mode .bg-gradient-to-br.from-slate-800.to-slate-900 {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06) !important;
 }
 
-@keyframes logoPulseLight {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(129, 99, 255, 0); }
-  50% { box-shadow: 0 0 16px 3px rgba(129, 99, 255, 0.2); }
+/* Upload card title */
+.light-mode .bg-gradient-to-br.from-slate-800.to-slate-900 h2.text-white {
+  color: #0F172A !important;
 }
 
+/* Upload icon badge */
+.light-mode .p-2.bg-gradient-to-br.from-violet-600.to-blue-600 {
+  background: #5B50F0 !important;
+  background-image: none !important;
+}
+
+/* Mode radio label text */
+.light-mode .bg-slate-700\/30.rounded-lg {
+  background-color: #F8FAFC !important;
+  border: 1px solid #E4E8F0 !important;
+}
+
+.light-mode .text-slate-300 {
+  color: #475569 !important;
+}
+
+/* Form labels */
+.light-mode label.block.text-sm.font-medium.text-slate-300 {
+  color: #475569 !important;
+}
+
+/* Input & Textarea */
+.light-mode .bg-slate-700\/50 {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light-mode .bg-slate-700\/50:focus {
+  border-color: #5B50F0 !important;
+  box-shadow: 0 0 0 3px rgba(91,80,240,0.12) !important;
+}
+
+/* Drag & drop zone */
+.light-mode .border-dashed.border-slate-600 {
+  border-color: #CBD5E1 !important;
+  background-color: #F8FAFC !important;
+}
+
+.light-mode .border-dashed.border-slate-600:hover {
+  border-color: #5B50F0 !important;
+  background-color: rgba(91,80,240,0.03) !important;
+}
+
+/* Selected file name text */
+.light-mode .text-emerald-400 {
+  color: #059669 !important;
+}
+
+/* Upload button */
+.light-mode .from-violet-600.to-blue-600 {
+  background: #5B50F0 !important;
+  background-image: none !important;
+}
+
+.light-mode .from-violet-600.to-blue-600:hover {
+  background: #4A40E0 !important;
+}
+
+/* Reset button */
+.light-mode .bg-slate-700\/50.text-slate-300.rounded-lg {
+  background-color: #F1F5F9 !important;
+  color: #64748B !important;
+  border: 1px solid #E4E8F0 !important;
+}
+
+/* Step indicator (loading) */
+.light-mode .bg-violet-600\/20.border-violet-500\/40 {
+  background-color: #EEF0FF !important;
+  border-color: #C7D2FE !important;
+}
+
+.light-mode .text-violet-300 {
+  color: #5B50F0 !important;
+}
+
+/* Auto-ringkas badge */
+.light-mode .text-emerald-400.bg-emerald-400\/10 {
+  background-color: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #A7F3D0 !important;
+}
+
+/* ── NotesViewer ────────────────────────────────────────────────────────────── */
+
+/* Stats header bar */
+.light-mode .bg-slate-950\/40.p-4.rounded-xl {
+  background: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .bg-slate-900\/60.rounded-xl {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+/* "Catatan Belajar" count text */
+.light-mode .text-2xl.font-extrabold.text-white {
+  color: #0F172A !important;
+}
+
+/* Section title */
+.light-mode h2.text-xl.font-extrabold.text-white {
+  color: #0F172A !important;
+}
+
+/* Result count badge */
+.light-mode .text-slate-400.font-semibold.bg-slate-800 {
+  background-color: #EEF0FF !important;
+  color: #5B50F0 !important;
+  border-color: #C7D2FE !important;
+}
+
+/* Search input */
+.light-mode .bg-slate-800\/50 {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light-mode .bg-slate-800\/50:focus,
+.light-mode .bg-slate-800\/50:hover {
+  background-color: #FFFFFF !important;
+  border-color: #5B50F0 !important;
+}
+
+/* Folder dropdown */
+.light-mode .bg-slate-800.border.border-slate-700.rounded-lg {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .bg-transparent.border-none.text-slate-300 {
+  color: #475569 !important;
+}
+
+/* Bookmark filter button */
+.light-mode .bg-slate-800\/60.border-slate-700.text-slate-400 {
+  background-color: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #94A3B8 !important;
+}
+
+.light-mode .bg-slate-800\/60.border-slate-700.text-slate-400:hover {
+  color: #0F172A !important;
+  background-color: #F1F5F9 !important;
+}
+
+/* Category tab bar */
+.light-mode .bg-slate-950\/40.p-0\.5.rounded-xl {
+  background: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Inactive category tab */
+.light-mode .text-slate-400.hover\:text-slate-200 {
+  color: #64748B !important;
+}
+
+/* Active category tab — indigo */
+.light-mode .from-violet-600.to-blue-600.text-white.shadow-md {
+  background: #5B50F0 !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+}
+
+/* Empty state */
+.light-mode .bg-slate-900\/10.border.border-dashed.border-slate-800.rounded-2xl {
+  background: #FAFBFF !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* Note card */
+.light-mode .bg-gradient-to-br.from-slate-900 {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Note card body text */
+.light-mode .text-slate-300.text-sm.line-clamp-2 {
+  color: #475569 !important;
+}
+
+/* Note card footer border */
+.light-mode .border-t.border-slate-800\/80 {
+  border-top-color: #E4E8F0 !important;
+}
+
+/* Tag chips in note card */
+.light-mode .bg-slate-800\/60.text-slate-400 {
+  background-color: #EEF2FF !important;
+  color: #4338CA !important;
+  border-color: #C7D2FE !important;
+}
+
+/* Expand detail button */
+.light-mode .text-violet-400.hover\:text-violet-300 {
+  color: #5B50F0 !important;
+}
+
+/* Expanded content area */
+.light-mode .border-t.border-slate-800.pt-4 {
+  border-top-color: #E4E8F0 !important;
+}
+
+/* Expanded note text box */
+.light-mode .bg-slate-950\/60.border.border-slate-800 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* AI Summary banner */
+.light-mode .from-emerald-950\/40.to-teal-950\/20 {
+  background: #ECFDF5 !important;
+  background-image: none !important;
+  border-color: #A7F3D0 !important;
+}
+
+.light-mode .text-emerald-300 {
+  color: #059669 !important;
+}
+
+/* Export buttons */
+.light-mode .bg-slate-800.hover\:bg-slate-700.border.border-slate-700.rounded-xl {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #475569 !important;
+}
+
+.light-mode .bg-slate-800.hover\:bg-slate-700.border.border-slate-700.rounded-xl:hover {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* AI Chat panel */
+.light-mode .bg-slate-950\/40.border.border-slate-800\/80 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode h4.text-xs.font-bold.text-slate-200 {
+  color: #0F172A !important;
+}
+
+.light-mode .bg-slate-950\/60.p-3.rounded-lg.border.border-slate-900 {
+  background: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .bg-violet-600\/20.text-violet-200 {
+  background-color: #EEF0FF !important;
+  color: #5B50F0 !important;
+  border-color: #C7D2FE !important;
+}
+
+.light-mode .bg-slate-800.text-slate-200.border.border-slate-700\/60 {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* AI chat input */
+.light-mode .bg-slate-800.border.border-slate-750 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* ── NotesSummary ─────────────────────────────────────────────────────────── */
+
+/* Note list card */
+.light-mode .bg-gradient-to-br.from-slate-800.to-slate-900.rounded-xl {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06) !important;
+}
+
+.light-mode h3.text-base.font-bold.text-white {
+  color: #0F172A !important;
+}
+
+/* Inactive note item button */
+.light-mode .bg-slate-700\/30.border-slate-600.text-slate-300 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #475569 !important;
+}
+
+.light-mode .bg-slate-700\/30.border-slate-600.text-slate-300:hover {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+/* Active note item */
+.light-mode .from-violet-600.to-blue-600.border-violet-500.text-white {
+  background: #5B50F0 !important;
+  background-image: none !important;
+  border-color: #5B50F0 !important;
+  color: #FFFFFF !important;
+}
+
+/* Has-summary badge */
+.light-mode .bg-emerald-500\/20.text-emerald-300.border-emerald-500\/30 {
+  background: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #A7F3D0 !important;
+}
+
+/* Selected note info box */
+.light-mode .bg-slate-700\/30.rounded-xl.border.border-slate-600 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .text-xs.text-slate-400.mb-1 {
+  color: #94A3B8 !important;
+}
+
+.light-mode .text-sm.text-white.font-semibold {
+  color: #0F172A !important;
+}
+
+/* Summary output card */
+.light-mode .from-slate-800.to-slate-900.rounded-xl.border.border-emerald-600\/30 {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #A7F3D0 !important;
+}
+
+.light-mode .text-sm.text-slate-200.max-h-56 {
+  color: #475569 !important;
+}
+
+/* Empty / dashed state */
+.light-mode .bg-slate-700\/20.border.border-dashed.border-slate-600 {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* Regenerate button */
+.light-mode .bg-slate-700\/50.text-slate-300.hover\:bg-slate-700.border.border-slate-600 {
+  background: #F1F5F9 !important;
+  color: #475569 !important;
+  border-color: #E4E8F0 !important;
+}
+
+.light-mode .bg-slate-700\/50.text-slate-300.hover\:bg-slate-700.border.border-slate-600:hover {
+  background: #FFFFFF !important;
+}
+
+/* Save summary button (blue→cyan) */
+.light-mode .from-blue-600.to-cyan-600 {
+  background: #5B50F0 !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   WORD VIEWER (DocumentViewer) — LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Document sidebar panel */
+.light-mode .document-sidebar,
+.light-mode [class*="document"] aside,
+.light-mode .bg-slate-900\/50,
+.light-mode .bg-slate-900\/40 {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Document main content area */
+.light-mode .backdrop-blur-md.border.border-slate-800 {
+  background-color: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Upload area in Word Viewer */
+.light-mode .border-2.border-dashed.border-slate-700 {
+  border-color: #CBD5E1 !important;
+  background: #F8FAFC !important;
+}
+
+.light-mode .border-2.border-dashed.border-slate-700:hover {
+  border-color: #5B50F0 !important;
+  background: rgba(91,80,240,0.03) !important;
+}
+
+/* Upload button in Word Viewer */
+.light-mode .bg-gradient-to-r.from-violet-600.to-blue-600 {
+  background: #5B50F0 !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+}
+
+.light-mode .bg-gradient-to-r.from-violet-600.to-blue-600:hover {
+  background: #4A40E0 !important;
+}
+
+/* Privacy notice box */
+.light-mode .bg-violet-950\/20,
+.light-mode .border-violet-800\/30 {
+  background-color: #EEF0FF !important;
+  border-color: #C7D2FE !important;
+}
+
+/* Document list items */
+.light-mode .hover\:bg-slate-800\/40:hover {
+  background-color: #EEF0FF !important;
+}
+
+/* Active document item */
+.light-mode .bg-violet-950\/30 {
+  background-color: #EEF0FF !important;
+  border-color: #C7D2FE !important;
+}
+
+/* Document content rendered area */
+.light-mode .bg-white.shadow-xl,
+.light-mode .prose {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.light-mode .prose h1,
+.light-mode .prose h2,
+.light-mode .prose h3,
+.light-mode .prose h4 {
+  color: #0F172A !important;
+}
+
+.light-mode .prose p,
+.light-mode .prose li {
+  color: #475569 !important;
+}
+
+/* Toolbar area in DocViewer */
+.light-mode .border-b.border-slate-800 {
+  border-bottom-color: #E4E8F0 !important;
+}
+
+.light-mode .border-b.border-slate-700 {
+  border-bottom-color: #E4E8F0 !important;
+}
+
+/* Doc viewer bottom bar */
+.light-mode .border-t.border-slate-800 {
+  border-top-color: #E4E8F0 !important;
+}
+
+/* Upload new file button at bottom of doc sidebar */
+.light-mode .bg-slate-800\/50.hover\:bg-slate-800 {
+  background-color: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+  color: #475569 !important;
+}
+
+.light-mode .bg-slate-800\/50.hover\:bg-slate-800:hover {
+  background-color: #FFFFFF !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   PLAYLIST SECTION — LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Playlist sidebar container */
+.light-mode .bg-slate-900\/50.backdrop-blur-md.border.border-slate-800.rounded-2xl {
+  background: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06) !important;
+}
+
+/* Playlist sidebar header */
+.light-mode .border-b.border-slate-800\/80 {
+  border-bottom-color: #E4E8F0 !important;
+}
+
+.light-mode .text-white.flex.items-center.gap-2 {
+  color: #0F172A !important;
+}
+
+/* FolderHeart icon */
+.light-mode .text-violet-400 {
+  color: #5B50F0 !important;
+}
+
+/* New playlist button */
+.light-mode .bg-slate-800.hover\:bg-slate-700.text-slate-300 {
+  background: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+  color: #64748B !important;
+}
+
+.light-mode .bg-slate-800.hover\:bg-slate-700.text-slate-300:hover {
+  background: #EEF0FF !important;
+  color: #5B50F0 !important;
+}
+
+/* New playlist name input */
+.light-mode .bg-slate-950.border.border-slate-800.rounded-lg {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light-mode .bg-slate-950.border.border-slate-800.rounded-lg:focus {
+  border-color: #5B50F0 !important;
+  box-shadow: 0 0 0 3px rgba(91,80,240,0.12) !important;
+}
+
+/* Playlist item — inactive */
+.light-mode .border-transparent.hover\:border-slate-800.hover\:bg-slate-800\/30.text-slate-400 {
+  color: #64748B !important;
+}
+
+.light-mode .border-transparent.hover\:border-slate-800.hover\:bg-slate-800\/30:hover {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Playlist item — active */
+.light-mode .border-violet-500\/40.bg-violet-950\/20 {
+  background: #EEF0FF !important;
+  border-color: #C7D2FE !important;
+  box-shadow: none !important;
+}
+
+/* Playlist name text */
+.light-mode .text-xs.sm\:text-sm.font-semibold.truncate.text-white {
+  color: #0F172A !important;
+}
+
+/* Song count text */
+.light-mode .text-\[10px\].text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+/* Empty playlist state */
+.light-mode .text-xs.text-slate-500.leading-5 {
+  color: #94A3B8 !important;
+}
+
+.light-mode .text-xs.text-violet-400.hover\:text-violet-300.font-semibold {
+  color: #5B50F0 !important;
+}
+
+/* Playlist edit input */
+.light-mode .w-full.text-xs.px-2.py-1.bg-slate-950 {
+  background: #F8FAFC !important;
+  border-color: #E4E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* ── Playlist Content area ──────────────────────────────────────────────── */
+
+/* Playlist content main card */
+.light-mode .bg-slate-900\/40.backdrop-blur-md.border.border-slate-800.rounded-2xl {
+  background: #FFFFFF !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Cover header row bg */
+.light-mode .from-slate-800\/20.to-transparent {
+  background: #F8FAFC !important;
+  background-image: none !important;
+  border-color: #E4E8F0 !important;
+}
+
+/* Playlist name */
+.light-mode h2.text-xl.font-extrabold.text-white,
+.light-mode h2.text-3xl.font-extrabold.text-white {
+  color: #0F172A !important;
+}
+
+/* Playlist meta (songs count, duration) */
+.light-mode .text-xs.text-slate-400.font-medium {
+  color: #94A3B8 !important;
+}
+
+/* Shuffle button */
+.light-mode .bg-slate-800.hover\:bg-slate-700.text-slate-200 {
+  background: #F1F5F9 !important;
+  border-color: #E4E8F0 !important;
+  color: #475569 !important;
+}
+
+.light-mode .bg-slate-800.hover\:bg-slate-700.text-slate-200:hover {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+/* Drag-drop upload zone */
+.light-mode .border-2.border-dashed.border-slate-800 {
+  border-color: #CBD5E1 !important;
+  background: #FAFBFF !important;
+}
+
+.light-mode .border-2.border-dashed.border-slate-800:hover {
+  border-color: #5B50F0 !important;
+  background: rgba(91,80,240,0.025) !important;
+}
+
+.light-mode .border-2.border-dashed.border-violet-500 {
+  border-color: #5B50F0 !important;
+  background: rgba(91,80,240,0.04) !important;
+}
+
+/* Upload zone text */
+.light-mode .text-xs.sm\:text-sm.text-slate-300.font-semibold {
+  color: #475569 !important;
+}
+
+.light-mode .text-\[10px\].text-slate-500.mt-1 {
+  color: #94A3B8 !important;
+}
+
+/* Upload cloud icon */
+.light-mode .text-slate-500.mb-2 {
+  color: #94A3B8 !important;
+}
+
+/* Empty playlist text in content */
+.light-mode .text-sm.text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+.light-mode .text-xs.text-slate-600 {
+  color: #94A3B8 !important;
+}
+
+/* Empty playlist state card (no playlist selected) */
+.light-mode .border-dashed.border-slate-800.rounded-2xl.bg-slate-900\/10 {
+  background: #FAFBFF !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* ── Song List (SongList.tsx) ───────────────────────────────────────────── */
+.light-mode .hover\:bg-slate-800\/60:hover {
+  background-color: #F1F5F9 !important;
+}
+
+.light-mode .bg-slate-800\/40 {
+  background-color: #EEF0FF !important;
+}
+
+/* Currently playing song row */
+.light-mode .bg-violet-950\/20 {
+  background-color: #EEF0FF !important;
+}
+
+/* Song title text */
+.light-mode .font-semibold.text-white.text-sm,
+.light-mode .font-semibold.text-sm.text-white {
+  color: #0F172A !important;
+}
+
+/* Song metadata text */
+.light-mode .text-xs.text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+/* Duration text */
+.light-mode .text-xs.font-mono.text-slate-400 {
+  color: #94A3B8 !important;
+}
 

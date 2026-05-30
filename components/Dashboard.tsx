@@ -19,7 +19,7 @@ import { usePlaylistStore } from '@/lib/stores/playlistStore';
 import { SmartRichEditor } from '@/components/SmartRichEditor';
 import { useNotesStore } from '@/lib/stores/notesStore';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { LogOut, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export function Dashboard() {
   const activeSection = useUIStore((state) => state.activeSection);
@@ -29,6 +29,7 @@ export function Dashboard() {
   const setEditing = useNotesStore((s) => s.setEditing);
 
   const { currentUser, logout } = useAuthStore();
+  const isLightMode = useUIStore((s) => s.isLightMode);
 
   // Restore playlist data on mount
   useEffect(() => {
@@ -38,13 +39,17 @@ export function Dashboard() {
   // Responsive classes reused across sections
   const headerClass = [
     'sticky top-0 z-30',
-    'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md',
-    'border-b border-[#E2E8F0] dark:border-slate-800/80 shadow-sm',
+    isLightMode ? 'bg-white/92 backdrop-blur-md' : 'bg-slate-900/80 backdrop-blur-md',
+    isLightMode ? 'border-b border-[#E4E8F0] shadow-[0_1px_0_0_#E4E8F0]' : 'border-b border-slate-800/80 shadow-sm',
     'py-4 px-4 sm:px-6 lg:px-8',
   ].join(' ');
 
-  const titleClass   = 'text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent';
-  const subtitleClass = 'text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1';
+  const titleClass   = isLightMode
+    ? 'text-xl sm:text-2xl lg:text-3xl font-semibold'
+    : 'text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent';
+  const titleStyle   = isLightMode ? { color: '#0F172A' } : {};
+  const subtitleClass = isLightMode ? 'text-xs sm:text-sm mt-1' : 'text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1';
+  const subtitleStyle = isLightMode ? { color: '#475569' } : {};
   const contentClass  = 'flex-1 overflow-auto p-4 sm:p-6 lg:p-8';
 
   // Shared reusable premium Header widget
@@ -53,8 +58,8 @@ export function Dashboard() {
       <header className={headerClass}>
         <div className="flex items-center justify-between gap-3 w-full">
           <div className="min-w-0">
-            <h1 className={titleClass}>{title}</h1>
-            <p className={subtitleClass}>{subtitle}</p>
+            <h1 className={titleClass} style={titleStyle}>{title}</h1>
+            <p className={subtitleClass} style={subtitleStyle}>{subtitle}</p>
           </div>
           
           <div className="flex items-center gap-3">
@@ -176,8 +181,14 @@ export function Dashboard() {
           <main className="flex-1 flex flex-col min-h-screen">
             <DashboardHeader title="Settings" subtitle="Customize your productivity experience" />
             <div className={contentClass}>
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700 rounded-xl p-8 sm:p-12 text-center">
-                <p className="text-slate-400 text-lg">Settings page coming soon…</p>
+              <div
+                className="rounded-2xl p-8 sm:p-12 text-center"
+                style={isLightMode
+                  ? { background: '#FFFFFF', border: '1px solid #E4E8F0', boxShadow: '0 1px 4px rgba(15,23,42,0.06)' }
+                  : { background: 'rgba(30,41,59,0.5)', border: '1px solid #334155' }
+                }
+              >
+                <p className="text-lg" style={{ color: isLightMode ? '#94A3B8' : '#94A3B8' }}>Settings page coming soon…</p>
               </div>
             </div>
           </main>
@@ -213,8 +224,8 @@ export function Dashboard() {
               {/* Quick Stats */}
               <section className="mb-6 lg:mb-8">
                 <div className="mb-3 lg:mb-4">
-                  <h2 className="text-lg sm:text-xl font-bold text-white">Today's Overview</h2>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1">Your productivity snapshot</p>
+                  <h2 className="text-lg sm:text-xl font-bold" style={{ color: isLightMode ? '#0F172A' : '#FFFFFF' }}>Today&apos;s Overview</h2>
+                  <p className="text-xs sm:text-sm mt-1" style={{ color: isLightMode ? '#475569' : '#94A3B8' }}>Your productivity snapshot</p>
                 </div>
                 <QuickStats />
               </section>
